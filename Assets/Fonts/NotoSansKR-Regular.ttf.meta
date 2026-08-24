@@ -1,0 +1,23 @@
+fileFormatVersion: 2
+guid: efcc5c4b7fdc266c1683bcc49d3a690f
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -1
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: NotoSansKR-Regular
+  fontNames:
+  - NotoSansKR-Regular
+  fallbackFontReferences: []
+  customCharacters:
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  fontWeight: 400
+  fontStyle: 0
+  userData:
+  assetBundleName:
+  assetBundleVariant:

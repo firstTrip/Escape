@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7665409204420ec16407241c32be5d6a, type: 3}
+  m_Name: Item_Key
+  m_EditorClassIdentifier:
+  itemId: "key"
+  displayName: "여벌 열쇠"
+  description: "편지꽂이 상자 안에 있던 현관 여벌 열쇠."
+  icon: {fileID: 21300000, guid: d2633627e461ed423c1bb1ab8d88488c, type: 3}

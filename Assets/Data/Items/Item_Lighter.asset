@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7665409204420ec16407241c32be5d6a, type: 3}
+  m_Name: Item_Lighter
+  m_EditorClassIdentifier:
+  itemId: "lighter"
+  displayName: "오래된 라이터"
+  description: "다이너의 라이터와 세트로 각인된, 오래된 라이터."
+  icon: {fileID: 21300000, guid: 913696a3ff0dd5593ffdcf8139ff67aa, type: 3}
