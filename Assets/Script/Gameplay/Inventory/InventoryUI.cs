@@ -20,10 +20,11 @@ public class InventoryUI : MonoBehaviour
 
     private void Refresh()
     {
-        if (inventoryManager == null) return;
+        if (inventoryManager == null || slots == null) return;
         var items = inventoryManager.Items;
         for (int i = 0; i < slots.Length; i++)
         {
+            if (slots[i] == null) continue;
             slots[i].SetItem(i < items.Count ? items[i] : null);
         }
     }

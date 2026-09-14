@@ -34,14 +34,17 @@ public class LockCodePuzzleController : InteractableHotspot
     private void Awake()
     {
         digits = new int[correctCode.Length];
-        for (int i = 0; i < digitUpButtons.Length; i++)
+        int buttonCount = Mathf.Min(digitUpButtons?.Length ?? 0, digitDownButtons?.Length ?? 0);
+        for (int i = 0; i < buttonCount; i++)
         {
             int idx = i;
-            digitUpButtons[idx].onClick.AddListener(() => ChangeDigit(idx, 1));
-            digitDownButtons[idx].onClick.AddListener(() => ChangeDigit(idx, -1));
+            if (digitUpButtons[idx] != null)
+                digitUpButtons[idx].onClick.AddListener(() => ChangeDigit(idx, 1));
+            if (digitDownButtons[idx] != null)
+                digitDownButtons[idx].onClick.AddListener(() => ChangeDigit(idx, -1));
         }
-        confirmButton.onClick.AddListener(TryConfirm);
-        closeButton.onClick.AddListener(ClosePanel);
+        if (confirmButton != null) confirmButton.onClick.AddListener(TryConfirm);
+        if (closeButton != null) closeButton.onClick.AddListener(ClosePanel);
         if (panelRoot != null) panelRoot.SetActive(false);
         RefreshLabels();
     }
@@ -60,8 +63,12 @@ public class LockCodePuzzleController : InteractableHotspot
 
     private void RefreshLabels()
     {
+        if (digitLabels == null) return;
         for (int i = 0; i < digitLabels.Length; i++)
-            digitLabels[i].text = digits[i].ToString();
+        {
+            if (digitLabels[i] != null)
+                digitLabels[i].text = digits[i].ToString();
+        }
     }
 
     private void TryConfirm()
