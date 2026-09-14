@@ -5,12 +5,15 @@ public class PrologueSequence : MonoBehaviour
 {
     [SerializeField] private CanvasGroup hotspotLayer;
     [SerializeField] private AudioSource rainLoopSource;
+    [SerializeField] private AudioSource clockTickSource;
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioClip phoneRingClip;
     [SerializeField] private AudioClip voicemailHumClip;
+    [SerializeField] private AudioClip messageCutoffClip;
     [TextArea][SerializeField] private string voicemailLine = "...오늘은 말할 수 있을까.";
     [SerializeField] private float delayBeforeRing = 1.0f;
     [SerializeField] private float delayAfterRing = 0.6f;
+    [SerializeField] private float cutoffAfterHum = 1.6f;
 
     private bool playing;
 
@@ -21,6 +24,11 @@ public class PrologueSequence : MonoBehaviour
         {
             rainLoopSource.loop = true;
             rainLoopSource.Play();
+        }
+        if (clockTickSource != null)
+        {
+            clockTickSource.loop = true;
+            clockTickSource.Play();
         }
         StartCoroutine(FadeInThenCall());
     }
@@ -54,6 +62,12 @@ public class PrologueSequence : MonoBehaviour
             sfxSource.PlayOneShot(voicemailHumClip);
         }
         SubtitleUI.Instance?.ShowLine(voicemailLine, 1.5f);
+
+        yield return new WaitForSeconds(cutoffAfterHum);
+        if (sfxSource != null && messageCutoffClip != null)
+        {
+            sfxSource.PlayOneShot(messageCutoffClip);
+        }
         playing = false;
     }
 
