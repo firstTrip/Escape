@@ -1,0 +1,9 @@
+{
+  "name": "ChannelZero.Runtime",
+  "rootNamespace": "ChannelZero.Runtime",
+  "references": [
+    "Unity.ugui",
+    "Unity.TextMeshPro"
+  ],
+  "autoReferenced": true
+}

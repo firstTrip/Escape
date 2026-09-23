@@ -1,0 +1,11 @@
+{
+  "name": "ChannelZero.Tests.PlayMode",
+  "rootNamespace": "ChannelZero.Tests.PlayMode",
+  "references": [
+    "ChannelZero.Runtime",
+    "Unity.ugui"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

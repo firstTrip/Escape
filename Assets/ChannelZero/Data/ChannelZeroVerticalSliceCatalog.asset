@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b9c155b23cc58194ca4eef2345327297, type: 3}
+  m_Name: ChannelZeroVerticalSliceCatalog
+  m_EditorClassIdentifier: ChannelZero.Runtime::ChannelZero.Runtime.Core.ChannelZeroRoomCatalog
+  backgrounds:
+  - roomId: Entry
+    era: 2001
+    stateId: default
+    sprite: {fileID: 21300000, guid: b53312a6523776e4e996fb402035e3bc, type: 3}
+  - roomId: LivingRoom
+    era: 1961
+    stateId: default
+    sprite: {fileID: 21300000, guid: 211e26254a5ce76418133dfa1265574f, type: 3}
+  - roomId: LivingRoom
+    era: 1981
+    stateId: default
+    sprite: {fileID: 21300000, guid: ead00962b2e9430439e83df13015ff04, type: 3}
+  - roomId: LivingRoom
+    era: 2001
+    stateId: default
+    sprite: {fileID: 21300000, guid: 3010947fa6f8f0a47b5b973d74045d9e, type: 3}
+  - roomId: LivingRoom
+    era: 2021
+    stateId: default
+    sprite: {fileID: 21300000, guid: defcccad36f182147bb07232e242d74c, type: 3}
+  - roomId: Workshop
+    era: 1961
+    stateId: default
+    sprite: {fileID: 21300000, guid: 16833cdbfd0ea4147a7f3b5a84591bc7, type: 3}
+  - roomId: Workshop
+    era: 1981
+    stateId: default
+    sprite: {fileID: 21300000, guid: 2c531bf2143d8d94c8d1e71ae6b2a5ef, type: 3}
+  - roomId: Workshop
+    era: 2001
+    stateId: default
+    sprite: {fileID: 21300000, guid: 87fed3a4ace31cb46ad1651d9b7f0d84, type: 3}
+  - roomId: Workshop
+    era: 2021
+    stateId: default
+    sprite: {fileID: 21300000, guid: 6f80faf3f870e9c459825434321ea877, type: 3}

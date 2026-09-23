@@ -1,0 +1,13 @@
+{
+  "name": "ChannelZero.Tests.EditMode",
+  "rootNamespace": "ChannelZero.Tests.EditMode",
+  "references": [
+    "ChannelZero.Runtime"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}
