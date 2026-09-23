@@ -203,6 +203,7 @@ public static class ChannelZeroVerticalSliceSceneCreator
         RenderTexture previousTarget = camera.targetTexture;
         try
         {
+            renderTexture.Create();
             Canvas.ForceUpdateCanvases();
             camera.targetTexture = renderTexture;
             camera.Render();
@@ -473,6 +474,9 @@ public static class ChannelZeroVerticalSliceSceneCreator
         RectTransform root = CreateRect("CloseupCanvas", canvasParent);
         Stretch(root);
         CanvasGroup group = root.gameObject.AddComponent<CanvasGroup>();
+        group.alpha = 0f;
+        group.interactable = false;
+        group.blocksRaycasts = false;
 
         Image dimmed = CreateImage("DimmedBackdrop", root, new Color(0f, 0f, 0f, 0.78f));
         Stretch(dimmed.rectTransform);
@@ -580,11 +584,14 @@ public static class ChannelZeroVerticalSliceSceneCreator
             new("Living_CRT", ChannelZeroIds.LivingRoom, new Rect(0.40f, 0.38f, 0.20f, 0.27f)),
             new("Living_Photos", ChannelZeroIds.LivingRoom, new Rect(0.41f, 0.25f, 0.20f, 0.14f)),
             new("Living_NumberRug", ChannelZeroIds.LivingRoom, new Rect(0.10f, 0.63f, 0.62f, 0.32f)),
-            new("Living_Armchair", ChannelZeroIds.LivingRoom, new Rect(0.72f, 0.40f, 0.25f, 0.49f)),
+            new("Living_JinwooHand", ChannelZeroIds.LivingRoom, new Rect(0.72f, 0.40f, 0.25f, 0.49f)),
             new("Living_Clock", ChannelZeroIds.LivingRoom, new Rect(0.59f, 0.15f, 0.08f, 0.45f)),
             new("Living_DisplayMedical", ChannelZeroIds.LivingRoom, new Rect(0.66f, 0.24f, 0.10f, 0.36f)),
-            new("Living_CoffeeTable", ChannelZeroIds.LivingRoom, new Rect(0.22f, 0.58f, 0.33f, 0.30f)),
-            new("Living_Toolbox", ChannelZeroIds.LivingRoom, new Rect(0.60f, 0.77f, 0.18f, 0.21f)),
+            new("Living_Lockbox", ChannelZeroIds.LivingRoom, new Rect(0.22f, 0.58f, 0.33f, 0.30f)),
+            new("Living_TubeCase", ChannelZeroIds.LivingRoom, new Rect(0.60f, 0.77f, 0.18f, 0.21f)),
+            new("Living_REC", ChannelZeroIds.LivingRoom, new Rect(0.43f, 0.58f, 0.14f, 0.08f), ChannelEra.Year2001),
+            new("Living_Mina", ChannelZeroIds.LivingRoom, new Rect(0.45f, 0.40f, 0.10f, 0.16f),
+                ChannelEra.Year1961, ChannelEra.Year1981, ChannelEra.Year2021),
             new(ChannelZeroIds.LivingWorkshopDoor, ChannelZeroIds.LivingRoom, new Rect(0.77f, 0.08f, 0.17f, 0.49f)),
 
             new("Workshop_Workbench", ChannelZeroIds.WorkshopRoom, new Rect(0.18f, 0.32f, 0.43f, 0.35f)),
@@ -839,8 +846,8 @@ public static class ChannelZeroVerticalSliceSceneCreator
 
         if (backgrounds != 1)
             throw new InvalidOperationException($"Expected one RoomBackground, found {backgrounds}.");
-        if (hotspots != 27 || logicalIds.Count != 27)
-            throw new InvalidOperationException($"Expected 27 unique hotspots, found {hotspots}/{logicalIds.Count}.");
+        if (hotspots != 29 || logicalIds.Count != 29)
+            throw new InvalidOperationException($"Expected 29 unique hotspots, found {hotspots}/{logicalIds.Count}.");
         if (colliders != 0)
             throw new InvalidOperationException($"Physics colliders are forbidden on this UI slice. Found {colliders}.");
         if (closeupCanvases != 1)

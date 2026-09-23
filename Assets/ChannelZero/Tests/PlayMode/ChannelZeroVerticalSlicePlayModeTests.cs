@@ -29,6 +29,9 @@ namespace ChannelZero.Tests.PlayMode
             ExecuteEvents.Execute(mail, new PointerEventData(EventSystem.current), ExecuteEvents.pointerClickHandler);
             yield return null;
 
+            controller.SkipNarrative();
+            yield return null;
+
             ChannelZeroCloseupCanvasController closeup =
                 Object.FindFirstObjectByType<ChannelZeroCloseupCanvasController>();
             Assert.That(closeup.IsOpen, Is.True);
@@ -39,6 +42,8 @@ namespace ChannelZero.Tests.PlayMode
 
             GameObject.Find("CloseButton").GetComponent<Button>().onClick.Invoke();
             yield return null;
+            controller.SkipNarrative();
+            yield return null;
             Assert.That(closeup.IsOpen, Is.False);
             Assert.That(controller.State.roomId, Is.EqualTo(ChannelZeroIds.EntryRoom));
             Assert.That(controller.State.era, Is.EqualTo(ChannelEra.Year2001));
@@ -48,6 +53,8 @@ namespace ChannelZero.Tests.PlayMode
             ExecuteEvents.Execute(entryDoor, new PointerEventData(EventSystem.current), ExecuteEvents.pointerClickHandler);
             yield return null;
 
+            controller.SkipNarrative();
+            yield return null;
             Assert.That(controller.State.roomId, Is.EqualTo(ChannelZeroIds.LivingRoom));
             Assert.That(controller.State.era, Is.EqualTo(ChannelEra.Year2001));
             Assert.That(GameObject.Find("BackButton").GetComponent<Button>().interactable, Is.True);

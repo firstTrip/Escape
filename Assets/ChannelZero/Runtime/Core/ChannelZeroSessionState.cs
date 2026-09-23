@@ -55,6 +55,7 @@ namespace ChannelZero.Runtime.Core
         public List<string> visitedRoomIds = new();
         public List<string> observedHotspotIds = new();
         public List<string> recordIds = new();
+        public List<string> seenTextIds = new();
         public List<string> inventoryItemIds = new();
         public List<PuzzleStateEntry> puzzleStates = new();
         public List<RoomHistoryEntry> roomHistory = new();
@@ -199,6 +200,16 @@ namespace ChannelZero.Runtime.Core
             AddUnique(recordIds, recordId);
         }
 
+        public void MarkTextSeen(string textId)
+        {
+            AddUnique(seenTextIds, textId);
+        }
+
+        public bool HasSeenText(string textId)
+        {
+            return !string.IsNullOrWhiteSpace(textId) && seenTextIds.Contains(textId);
+        }
+
         public void RewindPhysicalState(IEnumerable<PuzzleStateEntry> checkpointPuzzleStates)
         {
             puzzleStates = checkpointPuzzleStates == null
@@ -242,6 +253,7 @@ namespace ChannelZero.Runtime.Core
             visitedRoomIds ??= new List<string>();
             observedHotspotIds ??= new List<string>();
             recordIds ??= new List<string>();
+            seenTextIds ??= new List<string>();
             inventoryItemIds ??= new List<string>();
             puzzleStates ??= new List<PuzzleStateEntry>();
             roomHistory ??= new List<RoomHistoryEntry>();

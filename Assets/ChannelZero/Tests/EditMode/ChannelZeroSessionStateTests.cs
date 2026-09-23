@@ -107,12 +107,14 @@ namespace ChannelZero.Tests.EditMode
         {
             ChannelZeroSessionState state = ChannelZeroSessionState.CreateNew();
             state.MarkRecordRead(ChannelZeroIds.WorkshopFloorPlanCloseup);
+            state.MarkTextSeen("CH2.WORKSHOP.PLAN.MONO.FIRST");
             state.SetPuzzleState("puzzle.test", "solved");
 
             state.RewindPhysicalState(new[] { new PuzzleStateEntry("puzzle.test", "initial") });
 
             Assert.That(state.GetPuzzleState("puzzle.test"), Is.EqualTo("initial"));
             Assert.That(state.recordIds, Contains.Item(ChannelZeroIds.WorkshopFloorPlanCloseup));
+            Assert.That(state.seenTextIds, Contains.Item("CH2.WORKSHOP.PLAN.MONO.FIRST"));
         }
 
         private sealed class MemoryStore : IChannelZeroSaveStore
