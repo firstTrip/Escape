@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PhotoCombinePuzzleController : InteractableHotspot
+public class PhotoCombinePuzzleController : InteractableHotspot, IPuzzle
 {
     [SerializeField] private InventoryItemSO fragment1;
     [SerializeField] private InventoryItemSO fragment2;
@@ -20,14 +20,14 @@ public class PhotoCombinePuzzleController : InteractableHotspot
     {
         if (IsSolved)
         {
-            ExaminePanelUI.Instance?.Show(combinedSprite, combinedText);
+            ExaminePanelUI.Instance?.ShowDocument(combinedSprite, combinedText);
             return;
         }
 
         var inv = InventoryManager.Instance;
         if (inv == null || !inv.Has(fragment1) || !inv.Has(fragment2) || !inv.Has(fragment3))
         {
-            SubtitleUI.Instance?.ShowLine(needMoreLine);
+            SubtitleUI.Instance?.ShowFeedback(needMoreLine);
             return;
         }
 
@@ -37,7 +37,7 @@ public class PhotoCombinePuzzleController : InteractableHotspot
         inv.Add(combinedPhoto);
 
         IsSolved = true;
-        ExaminePanelUI.Instance?.Show(combinedSprite, combinedText);
+        ExaminePanelUI.Instance?.ShowDocument(combinedSprite, combinedText);
         OnSolved?.Invoke();
     }
 }

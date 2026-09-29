@@ -1,15 +1,15 @@
 using System;
 using System.Collections.Generic;
 using ChannelZero.Runtime.Core;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace ChannelZero.Runtime.Presentation
 {
     [DisallowMultipleComponent]
     public sealed class NarrativePresenter : MonoBehaviour
     {
-        [SerializeField] private Text outputLabel;
+        [SerializeField] private TMP_Text outputLabel;
 
         private readonly Queue<NarrativeTextEntry> queue = new();
         private ChannelZeroSessionState session;
@@ -19,7 +19,7 @@ namespace ChannelZero.Runtime.Presentation
         public bool IsPresenting { get; private set; }
         public NarrativeTextEntry Current { get; private set; }
 
-        public void Configure(Text label)
+        public void Configure(TMP_Text label)
         {
             outputLabel = label;
         }
@@ -73,7 +73,7 @@ namespace ChannelZero.Runtime.Presentation
 
             if (Input.GetKeyDown(KeyCode.Escape))
                 Skip();
-            else if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+            else if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
                 Advance();
         }
 
@@ -90,7 +90,8 @@ namespace ChannelZero.Runtime.Presentation
             if (outputLabel != null)
             {
                 string speaker = string.IsNullOrWhiteSpace(Current.speaker) ? string.Empty : $"[{Current.speaker}] ";
-                outputLabel.text = speaker + Current.text;
+                outputLabel.text = speaker + Current.text
+                    + "\n<size=65%><color=#BFA66F>클릭 또는 Enter</color></size>";
             }
         }
 

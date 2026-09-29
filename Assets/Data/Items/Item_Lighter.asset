@@ -11,8 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7665409204420ec16407241c32be5d6a, type: 3}
   m_Name: Item_Lighter
-  m_EditorClassIdentifier:
-  itemId: "lighter"
-  displayName: "오래된 라이터"
-  description: "다이너의 라이터와 세트로 각인된, 오래된 라이터."
-  icon: {fileID: 21300000, guid: 913696a3ff0dd5593ffdcf8139ff67aa, type: 3}
+  m_EditorClassIdentifier: 
+  itemId: lighter
+  displayName: "\uC624\uB798\uB41C \uB77C\uC774\uD130"
+  description: "\uB2E4\uC774\uB108\uC758 \uB77C\uC774\uD130\uC640 \uC138\uD2B8\uB85C
+    \uAC01\uC778\uB41C, \uC624\uB798\uB41C \uB77C\uC774\uD130."
+  icon: {fileID: 21300000, guid: 82435eceb721222419a252a6969afeed, type: 3}

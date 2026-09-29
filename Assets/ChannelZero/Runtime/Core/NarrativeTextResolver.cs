@@ -8,6 +8,7 @@ namespace ChannelZero.Runtime.Core
     {
         private static readonly string[] TypeOrder = { "description", "document", "monologue", "dialogue", "feedback" };
         private readonly NarrativeTextCatalog catalog;
+        public string Locale => catalog.Locale;
 
         public NarrativeTextResolver(NarrativeTextCatalog catalog)
         {
@@ -38,6 +39,25 @@ namespace ChannelZero.Runtime.Core
                     resolved.Add(selected);
             }
             return resolved;
+        }
+
+        public IReadOnlyList<NarrativeTextEntry> ResolveById(string textId, NarrativeTextContext context)
+        {
+            if (string.IsNullOrWhiteSpace(textId) ||
+                !catalog.TryGetById(textId, out NarrativeTextEntry entry) ||
+                (entry.once && context.Session.HasSeenText(entry.id)) ||
+                !NarrativeConditionEvaluator.Evaluate(entry.condition, context))
+                return Array.Empty<NarrativeTextEntry>();
+            return new[] { entry };
+        }
+
+        public string ResolveLocalizedText(string textId, string fallback = "")
+        {
+            return !string.IsNullOrWhiteSpace(textId) &&
+                   catalog.TryGetById(textId, out NarrativeTextEntry entry) &&
+                   !string.IsNullOrWhiteSpace(entry.text)
+                ? entry.text
+                : fallback ?? string.Empty;
         }
     }
 }

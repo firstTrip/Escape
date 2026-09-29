@@ -1,13 +1,13 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
-public class SubtitleUI : MonoBehaviour
+public class SubtitleUI : MonoBehaviour, IPuzzleFeedbackView
 {
     public static SubtitleUI Instance { get; private set; }
 
     [SerializeField] private CanvasGroup canvasGroup;
-    [SerializeField] private Text label;
+    [SerializeField] private TMP_Text label;
     [SerializeField] private float charactersPerSecond = 28f;
     [SerializeField] private float holdAfterComplete = 1.6f;
     [SerializeField] private float fadeDuration = 0.3f;
@@ -22,15 +22,26 @@ public class SubtitleUI : MonoBehaviour
             return;
         }
         Instance = this;
+        if (label == null)
+            label = transform.Find("Label")?.GetComponent<TMP_Text>();
         if (canvasGroup != null)
+        {
             canvasGroup.alpha = 0f;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
     }
 
     public void ShowLine(string text, float extraHold = 0f)
     {
+        if (label == null)
+            return;
         if (routine != null) StopCoroutine(routine);
         routine = StartCoroutine(PlayLine(text, extraHold));
     }
+
+    public void ShowFeedback(string message, float extraDuration = 0f) =>
+        ShowLine(message, extraDuration);
 
     private IEnumerator PlayLine(string text, float extraHold)
     {

@@ -9,6 +9,6 @@ public class Door : InteractableHotspot
     protected override void OnInteract()
     {
         bool hasKey = keyItem != null && InventoryManager.Instance != null && InventoryManager.Instance.Has(keyItem);
-        SubtitleUI.Instance?.ShowLine(hasKey ? haveKeyLine : lockedLine);
+        SubtitleUI.Instance?.ShowFeedback(hasKey ? haveKeyLine : lockedLine);
     }
 }

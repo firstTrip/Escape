@@ -11,8 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7665409204420ec16407241c32be5d6a, type: 3}
   m_Name: Item_Record
-  m_EditorClassIdentifier:
-  itemId: "record_an_die_ferne_geliebte"
-  displayName: "낡은 음반"
-  description: "An die ferne Geliebte. 유독 손때가 많이 묻은 음반."
-  icon: {fileID: 21300000, guid: 676b012e7d75851e69fc098a41fe3369, type: 3}
+  m_EditorClassIdentifier: 
+  itemId: record_an_die_ferne_geliebte
+  displayName: "\uB0A1\uC740 \uC74C\uBC18"
+  description: "An die ferne Geliebte. \uC720\uB3C5 \uC190\uB54C\uAC00 \uB9CE\uC774
+    \uBB3B\uC740 \uC74C\uBC18."
+  icon: {fileID: 21300000, guid: 6e1d4e621c6453541845edbcb61a7790, type: 3}

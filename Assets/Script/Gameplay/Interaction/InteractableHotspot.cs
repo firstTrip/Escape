@@ -11,6 +11,7 @@ public abstract class InteractableHotspot : MonoBehaviour, IInteractable, IHover
         get => interactable;
         set => interactable = value;
     }
+    public bool CanInteract => interactable;
 
     public void OnPointerClick(PointerEventData eventData)
     {

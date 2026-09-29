@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "locale": "ko-KR",
+  "items": [
+    { "id": "Screwdriver", "displayName": "일자 드라이버", "description": "TV 서비스 덮개의 황동 나사에 맞는다.", "canHold": true },
+    { "id": "ReplacementTube", "displayName": "교체용 진공관", "description": "그을린 관과 핀 배열·전압 규격이 같다.", "canHold": true },
+    { "id": "Disinfectant", "displayName": "소독제", "description": "금속 가루와 오염을 먼저 씻어 낸다.", "canHold": false },
+    { "id": "Bandage", "displayName": "붕대", "description": "소독한 상처를 압박 고정한다.", "canHold": false },
+    { "id": "ClockKey", "displayName": "괘종시계 태엽 열쇠", "description": "08:08 시간 매듭의 시계 축과 규격이 같다.", "canHold": true },
+    { "id": "WorkshopKey", "displayName": "작업실 열쇠", "description": "작업실 문양이 새겨진 황동 열쇠다.", "canHold": true }
+  ],
+  "puzzles": [
+    {
+      "id": "ch1.toolbox", "puzzleId": "ch1.toolbox", "closeupId": "LIV-Z00",
+      "activeEra": 2001, "hotspotId": "Living_Toolbox", "ruleType": "loot",
+      "title": "플레이어 수리 공구함", "prerequisiteFlags": ["TVRearInspected"],
+      "solvedFlag": "ScrewdriverOwned", "lootItems": ["Screwdriver"],
+      "lootLabels": ["일자 드라이버 챙기기"],
+      "hints": ["TV 후면 황동 나사와 같은 폭의 일자 드라이버가 필요하다."]
+    },
+    {
+      "id": "ch1.crt_signal", "puzzleId": "ch1.crt_signal", "closeupId": "LIV-Z01",
+      "activeEra": 2001, "hotspotId": "Living_CRT", "ruleType": "signal",
+      "title": "무전원 TV", "prerequisiteFlags": ["Photo2001BaselineSeen"],
+      "solvedFlag": "TVPhysicalRepairDone",
+      "hints": ["플러그가 빠진 화면을 관찰하고 거실로 돌아온 뒤 다시 확인한다."]
+    },
+    {
+      "id": "ch1.crt_rear", "puzzleId": "ch1.crt_rear", "closeupId": "LIV-Z02",
+      "activeEra": 2001, "hotspotId": "Living_CRTRear", "ruleType": "crt_rear",
+      "title": "TV 후면 수리부", "prerequisiteFlags": ["ChildSofaIntroSeen"],
+      "solvedFlag": "TVPhysicalRepairDone",
+      "hints": ["후면 조사, 드라이버, 나사 네 개, 손상 관 분리, 규격 관 장착, 브래킷 고정 순서다."]
+    },
+    {
+      "id": "ch1.tube_case", "puzzleId": "ch1.tube_case", "closeupId": "LIV-Z03",
+      "activeEra": 2001, "hotspotId": "Living_TubeCase", "ruleType": "loot",
+      "title": "진공관 보관함", "prerequisiteFlags": ["ScrewdriverOwned"],
+      "solvedFlag": "ReplacementTubeOwned", "lootItems": ["ReplacementTube"],
+      "lootLabels": ["7핀 교체관 챙기기"],
+      "hints": ["그을린 관과 같은 7핀 배열·전압 규격을 고른다."]
+    },
+    {
+      "id": "ch1.return_circuit", "puzzleId": "ch1.return_circuit", "closeupId": "LIV-Z08",
+      "activeEra": 1961, "hotspotId": "Living_ReturnCircuit", "ruleType": "return_circuit",
+      "title": "1961 귀환 회로", "prerequisiteFlags": ["FirstSlip1961Done"],
+      "solvedFlag": "ReturnTubeSequenceSolved",
+      "hints": ["배선은 빨강·파랑·노랑·초록, 관은 2·4·1·3 순서다."]
+    },
+    {
+      "id": "ch1.vase_causality", "puzzleId": "ch1.vase_causality", "closeupId": "LIV-Z07",
+      "activeEra": 1961, "hotspotId": "Living_Vase", "ruleType": "vase_causality",
+      "title": "화병 인과 사건", "prerequisiteFlags": ["ManualDialUnlocked"],
+      "solvedFlag": "VaseCausalityLearned", "allowInactiveEraReview": true,
+      "hints": ["1961에서 방치하고 1981 결과를 본 뒤 1961로 돌아와 화병을 안쪽으로 옮긴다."]
+    },
+    {
+      "id": "ch1.photos", "puzzleId": "ch1.photos", "closeupId": "LIV-Z10",
+      "activeEra": 2001, "hotspotId": "Living_Photos", "ruleType": "child_trace",
+      "title": "아이의 시대별 흔적", "prerequisiteFlags": [],
+      "solvedFlag": "ChildTrace2749Known", "allowInactiveEraReview": true,
+      "hints": ["1961·1981·2001·2021의 사진과 반사면에서 위치값 2·7·4·9를 확인한다."]
+    },
+    {
+      "id": "ch1.child_trace_stabilizer", "puzzleId": "ch1.child_trace_stabilizer", "closeupId": "LIV-Z04",
+      "activeEra": 2001, "hotspotId": "Living_NumberRug", "ruleType": "signal_stabilizer",
+      "title": "카펫 아래 신호 안정기", "prerequisiteFlags": ["ChildTrace2749Known"],
+      "answer": "2749",
+      "solvedFlag": "SignalStabilizerSolved",
+      "allowInactiveEraReview": true,
+      "hints": [
+        "카펫 모서리 아래에 네 자리 신호 안정기가 숨어 있다.",
+        "아이의 흔적에서 본 위치값을 1961년부터 시대 순으로 배열한다.",
+        "시대 순서 위치값 2, 7, 4, 9를 이어 2749를 입력한다."
+      ]
+    },
+    {
+      "id": "ch1.medical", "puzzleId": "ch1.medical", "closeupId": "LIV-Z05",
+      "activeEra": 1961, "hotspotId": "Living_DisplayMedical", "ruleType": "loot",
+      "title": "철제 의료함", "prerequisiteFlags": ["JinwooAmputationFutureSeen"],
+      "solvedFlag": "MedicalSuppliesTaken", "lootItems": ["Disinfectant", "Bandage"],
+      "lootLabels": ["소독제 챙기기", "붕대 챙기기"],
+      "hints": ["소독제와 붕대를 챙기고 반드시 소독부터 한다."]
+    },
+    {
+      "id": "ch1.jinwoo_hand", "puzzleId": "ch1.jinwoo_hand", "closeupId": "LIV-Z06",
+      "activeEra": 1961, "hotspotId": "Living_JinwooHand", "ruleType": "jinwoo_causality",
+      "title": "진우의 오른손", "prerequisiteFlags": ["SignalStabilizerSolved"],
+      "solvedFlag": "JinwooHandPreserved", "allowInactiveEraReview": true,
+      "hints": ["1961 부상, 2001 절단 기록, 1961 재방문, 소독제, 붕대, 2001 보존 확인 순서다."]
+    },
+    {
+      "id": "ch1.clock_knot", "puzzleId": "ch1.clock_knot", "closeupId": "LIV-Z12",
+      "activeEra": 1981, "hotspotId": "Living_Clock", "ruleType": "clock_knot",
+      "title": "08:08 괘종시계", "prerequisiteFlags": ["SignalStabilizerSolved", "ClockKeyOwned", "JinwooHandPreserved"],
+      "solvedFlag": "ClockKnotSolved", "allowInactiveEraReview": true,
+      "hints": ["태엽 열쇠, 공통 황동 톱니, 시침·분침 08:08 순서다."]
+    }
+  ]
+}

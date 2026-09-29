@@ -12,10 +12,10 @@ public class ChapterTransitionStub : InteractableHotspot
     {
         if (house != null && !house.AllSolved)
         {
-            SubtitleUI.Instance?.ShowLine(notReadyLine);
+            SubtitleUI.Instance?.ShowFeedback(notReadyLine);
             return;
         }
 
-        ExaminePanelUI.Instance?.Show(matchboxSprite, transitionText);
+        ExaminePanelUI.Instance?.ShowDocument(matchboxSprite, transitionText);
     }
 }

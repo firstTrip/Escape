@@ -1,0 +1,1059 @@
+{
+  "schemaVersion": 1,
+  "locale": "ko-KR",
+  "items": [
+    {
+      "id": "Screwdriver",
+      "displayName": "일자 드라이버",
+      "description": "CRT 서비스 덮개의 나사에 맞는다.",
+      "canHold": true
+    },
+    {
+      "id": "ReplacementTube",
+      "displayName": "교체용 진공관",
+      "description": "그을린 관과 핀 배열이 같다.",
+      "canHold": true
+    },
+    {
+      "id": "Disinfectant",
+      "displayName": "소독 도구",
+      "description": "상처를 먼저 닦는 데 사용한다.",
+      "canHold": false
+    },
+    {
+      "id": "Bandage",
+      "displayName": "붕대",
+      "description": "소독이 끝난 상처에 사용한다.",
+      "canHold": false
+    },
+    {
+      "id": "MasterTape",
+      "displayName": "MASTER 테이프",
+      "description": "여러 시대의 화면을 겹친 기록이다.",
+      "canHold": true
+    },
+    {
+      "id": "NormalTube",
+      "displayName": "정상 후보 진공관",
+      "description": "시험기로 상태를 확인해야 한다.",
+      "canHold": true
+    },
+    {
+      "id": "FaultyTube",
+      "displayName": "그을린 후보 진공관",
+      "description": "필라멘트가 끊어졌을 가능성이 있다.",
+      "canHold": true
+    },
+    {
+      "id": "item.floor_crank",
+      "displayName": "접이식 크랭크",
+      "description": "중앙 복도 잠금축 소켓과 규격이 같다.",
+      "canHold": true
+    }
+  ],
+  "puzzles": [
+    {
+      "id": "ch1.toolbox",
+      "closeupId": "LIV-Z00",
+      "ruleType": "loot",
+      "title": "플레이어 수리 공구함",
+      "instruction": "일자 드라이버를 챙긴다.",
+      "openArtwork": "default",
+      "completeArtwork": "acquired",
+      "lootItems": [
+        "Screwdriver"
+      ],
+      "lootLabels": [
+        "일자 드라이버 챙기기"
+      ],
+      "hints": [
+        "CRT 후면 나사에 맞는 공구가 필요하다.",
+        "2001년 거실 오른쪽 아래 공구함을 확인한다.",
+        "공구함의 일자 드라이버를 클릭한다."
+      ],
+      "puzzleId": "ch1.toolbox",
+      "activeEra": 2001,
+      "hotspotId": "Living_Toolbox",
+      "prerequisiteFlags": [
+        "CrtRearInspected"
+      ],
+      "solvedFlag": "ToolboxScrewdriverTaken",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "screwdriver_taken"
+        },
+        {
+          "era": 1981,
+          "stateId": "screwdriver_taken"
+        },
+        {
+          "era": 2001,
+          "stateId": "screwdriver_taken"
+        },
+        {
+          "era": 2021,
+          "stateId": "screwdriver_taken"
+        }
+      ]
+    },
+    {
+      "id": "ch1.crt_signal",
+      "closeupId": "LIV-Z01",
+      "ruleType": "signal",
+      "title": "무전원 CRT",
+      "instruction": "백색 잡음 속 신호를 고정한다.",
+      "hints": [
+        "전원선보다 화면의 채널 반응을 본다.",
+        "채널 신호를 잠시 고정할 수 있다.",
+        "신호 고정 버튼을 눌러 미나의 화면을 확인한다."
+      ],
+      "puzzleId": "ch1.crt_signal",
+      "activeEra": 2001,
+      "hotspotId": "Living_CRT",
+      "prerequisiteFlags": [],
+      "solvedFlag": "CrtRepaired",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "stable"
+        },
+        {
+          "era": 1981,
+          "stateId": "stable"
+        },
+        {
+          "era": 2001,
+          "stateId": "stable"
+        },
+        {
+          "era": 2021,
+          "stateId": "stable"
+        }
+      ]
+    },
+    {
+      "id": "ch1.crt_rear",
+      "closeupId": "LIV-Z02",
+      "ruleType": "crt_rear",
+      "title": "CRT 후면 수리부",
+      "instruction": "덮개부터 순서대로 수리한다.",
+      "hints": [
+        "맨손으로 나사를 풀 수는 없다.",
+        "수리함에서 드라이버와 교체관을 찾는다.",
+        "덮개→손상관 제거→교체관 장착→브래킷 순서다."
+      ],
+      "puzzleId": "ch1.crt_rear",
+      "activeEra": 2001,
+      "hotspotId": "Living_CRT",
+      "prerequisiteFlags": [],
+      "solvedFlag": "CrtRepaired",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "repaired"
+        },
+        {
+          "era": 1981,
+          "stateId": "repaired"
+        },
+        {
+          "era": 2001,
+          "stateId": "repaired"
+        },
+        {
+          "era": 2021,
+          "stateId": "repaired"
+        }
+      ]
+    },
+    {
+      "id": "ch1.tube_case",
+      "closeupId": "LIV-Z03",
+      "ruleType": "loot",
+      "title": "진공관 수리함",
+      "openArtwork": "open",
+      "completeArtwork": "acquired",
+      "lootItems": [
+        "ReplacementTube"
+      ],
+      "lootLabels": [
+        "교체용 진공관 챙기기"
+      ],
+      "hints": [
+        "잠금쇠를 먼저 연다.",
+        "CRT 덮개와 소켓에 필요한 도구가 함께 있다.",
+        "드라이버와 교체용 진공관을 모두 챙긴다."
+      ],
+      "puzzleId": "ch1.tube_case",
+      "activeEra": 2001,
+      "hotspotId": "Living_TubeCase",
+      "prerequisiteFlags": [
+        "CrtRearInspected"
+      ],
+      "solvedFlag": "TubeCaseLooted",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "acquired"
+        },
+        {
+          "era": 1981,
+          "stateId": "acquired"
+        },
+        {
+          "era": 2001,
+          "stateId": "acquired"
+        },
+        {
+          "era": 2021,
+          "stateId": "acquired"
+        }
+      ]
+    },
+    {
+      "id": "ch1.rug2749",
+      "closeupId": "LIV-Z04",
+      "ruleType": "sequence",
+      "title": "숫자 카펫",
+      "instruction": "사진에서 확인한 칸을 순서대로 누른다.",
+      "answer": "2749",
+      "clueFlag": "FamilyPhotoClueSeen",
+      "hints": [
+        "각 시대 가족사진의 액자 받침과 사라진 자리의 표찰을 확인한다.",
+        "표찰을 1961→1981→2001→2021 순서로 읽는다.",
+        "입력 순서는 2→7→4→9다."
+      ],
+      "puzzleId": "ch1.rug2749",
+      "activeEra": 2001,
+      "hotspotId": "Living_NumberRug",
+      "allowInactiveEraReview": true,
+      "reviewArtworkStateByEra": [
+        {
+          "era": 2021,
+          "stateId": "hint9"
+        }
+      ],
+      "prerequisiteFlags": [
+        "FamilyPhotoClueSeen"
+      ],
+      "solvedFlag": "Rug2749Solved",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "solved"
+        },
+        {
+          "era": 1981,
+          "stateId": "solved"
+        },
+        {
+          "era": 2001,
+          "stateId": "solved"
+        },
+        {
+          "era": 2021,
+          "stateId": "solved"
+        }
+      ]
+    },
+    {
+      "id": "ch1.medical",
+      "closeupId": "LIV-Z05",
+      "ruleType": "loot",
+      "title": "철제 의료함",
+      "lootItems": [
+        "Disinfectant",
+        "Bandage"
+      ],
+      "lootLabels": [
+        "소독 도구 챙기기",
+        "붕대 챙기기"
+      ],
+      "hints": [
+        "치료에는 두 종류의 물품이 필요하다.",
+        "붕대 전에 상처를 닦아야 한다.",
+        "소독 도구와 붕대를 모두 챙긴다."
+      ],
+      "puzzleId": "ch1.medical",
+      "activeEra": 1961,
+      "hotspotId": "Living_DisplayMedical",
+      "prerequisiteFlags": [
+        "JinwooInjured"
+      ],
+      "solvedFlag": "MedicalSuppliesTaken",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2001,
+          "textId": "CH1.PUZZLE.INACTIVE.2001"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "acquired"
+        },
+        {
+          "era": 1981,
+          "stateId": "acquired"
+        },
+        {
+          "era": 2001,
+          "stateId": "acquired"
+        },
+        {
+          "era": 2021,
+          "stateId": "acquired"
+        }
+      ]
+    },
+    {
+      "id": "ch1.jinwoo_hand",
+      "closeupId": "LIV-Z06",
+      "ruleType": "treatment",
+      "title": "진우의 손 치료",
+      "hints": [
+        "붕대를 바로 감으면 안 된다.",
+        "먼저 의료함의 소독 도구를 사용한다.",
+        "소독한 뒤 붕대를 감는다."
+      ],
+      "puzzleId": "ch1.jinwoo_hand",
+      "activeEra": 1961,
+      "hotspotId": "Living_JinwooHand",
+      "prerequisiteFlags": [
+        "JinwooInjured"
+      ],
+      "solvedFlag": "JinwooTreated",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2001,
+          "textId": "CH1.PUZZLE.INACTIVE.2001"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "treated"
+        },
+        {
+          "era": 1981,
+          "stateId": "treated"
+        },
+        {
+          "era": 2001,
+          "stateId": "treated"
+        },
+        {
+          "era": 2021,
+          "stateId": "treated"
+        }
+      ]
+    },
+    {
+      "id": "ch1.lockbox8888",
+      "closeupId": "LIV-Z07",
+      "ruleType": "sequence",
+      "title": "네 자리 자물쇠",
+      "instruction": "네 번 반복된 시간을 입력한다.",
+      "answer": "8888",
+      "clueFlag": "MinaAllErasConfirmed",
+      "hints": [
+        "미나와 멈춘 시계의 공통 숫자를 본다.",
+        "8시 8분과 네 시대를 함께 생각한다.",
+        "네 자리에 8을 각각 입력한다."
+      ],
+      "puzzleId": "ch1.lockbox8888",
+      "activeEra": 1981,
+      "hotspotId": "Living_Lockbox",
+      "prerequisiteFlags": [
+        "MinaAllErasConfirmed",
+        "Clock808Seen",
+        "RecMasterComplete"
+      ],
+      "solvedFlag": "Lockbox8888Solved",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 2001,
+          "textId": "CH1.PUZZLE.INACTIVE.2001"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "opened"
+        },
+        {
+          "era": 1981,
+          "stateId": "opened"
+        },
+        {
+          "era": 2001,
+          "stateId": "opened"
+        },
+        {
+          "era": 2021,
+          "stateId": "opened"
+        }
+      ]
+    },
+    {
+      "id": "ch1.rec_master",
+      "closeupId": "LIV-Z08",
+      "ruleType": "rec",
+      "title": "REC 기록 장치",
+      "hints": [
+        "서로 다른 시대의 같은 장소를 기록한다.",
+        "1961·1981·2021 기록이 필요하다.",
+        "세 기록을 모은 뒤 MASTER 합성을 누른다."
+      ],
+      "puzzleId": "ch1.rec_master",
+      "activeEra": 2021,
+      "hotspotId": "Living_REC",
+      "prerequisiteFlags": [
+        "CrtRepaired"
+      ],
+      "solvedFlag": "RecMasterComplete",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2001,
+          "textId": "CH1.PUZZLE.INACTIVE.2001"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "master_complete"
+        },
+        {
+          "era": 1981,
+          "stateId": "master_complete"
+        },
+        {
+          "era": 2001,
+          "stateId": "master_complete"
+        },
+        {
+          "era": 2021,
+          "stateId": "master_complete"
+        }
+      ]
+    },
+    {
+      "id": "ch1.rec_master",
+      "closeupId": "LIV-Z09",
+      "ruleType": "rec",
+      "title": "REC 테이프 슬롯",
+      "hints": [
+        "빈 슬롯은 아직 기록이 부족하다는 뜻이다.",
+        "세 시대의 기록을 슬롯에 모은다.",
+        "1961·1981·2021 기록 후 MASTER 합성을 누른다."
+      ],
+      "puzzleId": "ch1.rec_master",
+      "activeEra": 2021,
+      "hotspotId": "Living_REC",
+      "prerequisiteFlags": [
+        "CrtRepaired"
+      ],
+      "solvedFlag": "RecMasterComplete",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2001,
+          "textId": "CH1.PUZZLE.INACTIVE.2001"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "master_complete"
+        },
+        {
+          "era": 1981,
+          "stateId": "master_complete"
+        },
+        {
+          "era": 2001,
+          "stateId": "master_complete"
+        },
+        {
+          "era": 2021,
+          "stateId": "master_complete"
+        }
+      ]
+    },
+    {
+      "id": "ch1.photos",
+      "closeupId": "LIV-Z10",
+      "ruleType": "era_evidence",
+      "title": "시대별 가족사진",
+      "instruction": "사진 비교",
+      "clueFlag": "FamilyPhoto",
+      "completeFlag": "AllFamilyPhotosSeen",
+      "textOnlyEras": [
+        2021
+      ],
+      "hints": [
+        "같은 구도의 사진을 시대별로 본다.",
+        "가족은 늙지만 한 아이는 변하지 않는다.",
+        "2021년에는 오른쪽 유리장에서 사진이 사라진 자리의 흔적을 확인한다."
+      ],
+      "puzzleId": "ch1.photos",
+      "activeEra": 2001,
+      "hotspotId": "Living_Photos",
+      "prerequisiteFlags": [],
+      "solvedFlag": "AllFamilyPhotosSeen",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "all_eras_seen"
+        },
+        {
+          "era": 1981,
+          "stateId": "all_eras_seen"
+        },
+        {
+          "era": 2001,
+          "stateId": "all_eras_seen"
+        },
+        {
+          "era": 2021,
+          "stateId": "all_eras_seen"
+        }
+      ]
+    },
+    {
+      "id": "ch1.wiring",
+      "closeupId": "LIV-Z11",
+      "ruleType": "inspect",
+      "title": "CRT 배선도",
+      "instruction": "배선 경로를 확인했다.",
+      "completeFlag": "CrtWiringSeen",
+      "hints": [
+        "전원선과 별개인 신호 경로를 찾는다.",
+        "후면 브래킷으로 이어지는 선을 본다.",
+        "자세히 조사 버튼으로 배선 기록을 남긴다."
+      ],
+      "puzzleId": "ch1.wiring",
+      "activeEra": 2001,
+      "hotspotId": "Living_REC",
+      "prerequisiteFlags": [],
+      "solvedFlag": "CrtWiringSeen",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH1.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "traced"
+        },
+        {
+          "era": 1981,
+          "stateId": "traced"
+        },
+        {
+          "era": 2001,
+          "stateId": "traced"
+        },
+        {
+          "era": 2021,
+          "stateId": "traced"
+        }
+      ]
+    },
+    {
+      "id": "ch1.clock",
+      "closeupId": "LIV-Z12",
+      "ruleType": "inspect",
+      "title": "멈춘 괘종시계",
+      "instruction": "시계는 8시 8분에 멈춰 있다.",
+      "completeFlag": "Clock808Seen",
+      "hints": [
+        "시침과 분침의 위치를 본다.",
+        "같은 숫자가 두 번 반복된다.",
+        "멈춘 시간은 8시 8분이다."
+      ],
+      "puzzleId": "ch1.clock",
+      "activeEra": 1981,
+      "hotspotId": "Living_Clock",
+      "prerequisiteFlags": [],
+      "solvedFlag": "Clock808Seen",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH1.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 2001,
+          "textId": "CH1.PUZZLE.INACTIVE.2001"
+        },
+        {
+          "era": 2021,
+          "textId": "CH1.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "stopped"
+        },
+        {
+          "era": 1981,
+          "stateId": "stopped"
+        },
+        {
+          "era": 2001,
+          "stateId": "stopped"
+        },
+        {
+          "era": 2021,
+          "stateId": "stopped"
+        }
+      ]
+    },
+    {
+      "id": "ch2.parts_drawer",
+      "closeupId": "WKS-Z02",
+      "ruleType": "parts_drawer",
+      "title": "부품 서랍",
+      "lootItems": [
+        "NormalTube",
+        "FaultyTube"
+      ],
+      "lootLabels": [
+        "정상 후보 진공관",
+        "그을린 후보 진공관"
+      ],
+      "hints": [
+        "겉모습만으로 상태를 확정할 수 없다.",
+        "후보 관 두 개를 모두 챙긴다.",
+        "정상 후보와 그을린 후보를 시험기로 비교한다."
+      ],
+      "puzzleId": "ch2.parts_drawer",
+      "activeEra": 1981,
+      "hotspotId": "Workshop_PartsDrawer",
+      "prerequisiteFlags": [],
+      "solvedFlag": "PartsDrawerSorted",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH2.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 2001,
+          "textId": "CH2.PUZZLE.INACTIVE.2001"
+        },
+        {
+          "era": 2021,
+          "textId": "CH2.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "sorted"
+        },
+        {
+          "era": 1981,
+          "stateId": "sorted"
+        },
+        {
+          "era": 2001,
+          "stateId": "sorted"
+        },
+        {
+          "era": 2021,
+          "stateId": "sorted"
+        }
+      ]
+    },
+    {
+      "id": "ch2.tube_tester",
+      "closeupId": "WKS-Z01",
+      "ruleType": "tester",
+      "title": "진공관 시험기",
+      "hints": [
+        "먼저 검사할 관을 장착한다.",
+        "두 후보의 계기 반응을 비교한다.",
+        "정상 후보를 장착하고 측정 시작을 누른다."
+      ],
+      "puzzleId": "ch2.tube_tester",
+      "activeEra": 1961,
+      "hotspotId": "Workshop_TubeTester",
+      "prerequisiteFlags": [],
+      "solvedFlag": "TubeTestNormal",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1981,
+          "textId": "CH2.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2001,
+          "textId": "CH2.PUZZLE.INACTIVE.2001"
+        },
+        {
+          "era": 2021,
+          "textId": "CH2.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "normal"
+        },
+        {
+          "era": 1981,
+          "stateId": "normal"
+        },
+        {
+          "era": 2001,
+          "stateId": "normal"
+        },
+        {
+          "era": 2021,
+          "stateId": "normal"
+        }
+      ]
+    },
+    {
+      "id": "ch2.floor_plan",
+      "closeupId": "WKS-Z03",
+      "ruleType": "inspect_plan",
+      "title": "주택 보수 도면",
+      "instruction": "중앙 복도 아래 네 잠금축을 확인했다.",
+      "completeFlag": "FloorPlanSeen",
+      "chapterTwo": true,
+      "hints": [
+        "방이 아니라 중앙 복도 바닥을 본다.",
+        "네 개의 축과 회전 소켓을 확인한다.",
+        "도면을 자세히 조사해 계단 복선을 기록한다."
+      ],
+      "puzzleId": "ch2.floor_plan",
+      "activeEra": 1961,
+      "hotspotId": "Workshop_FloorPlan",
+      "prerequisiteFlags": [
+        "TubeTestNormal"
+      ],
+      "solvedFlag": "FloorPlanSeen",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1981,
+          "textId": "CH2.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2001,
+          "textId": "CH2.PUZZLE.INACTIVE.2001"
+        },
+        {
+          "era": 2021,
+          "textId": "CH2.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "inspected"
+        },
+        {
+          "era": 1981,
+          "stateId": "inspected"
+        },
+        {
+          "era": 2001,
+          "stateId": "inspected"
+        },
+        {
+          "era": 2021,
+          "stateId": "inspected"
+        }
+      ]
+    },
+    {
+      "id": "ch2.wiring",
+      "closeupId": "WKS-Z04",
+      "ruleType": "inspect",
+      "title": "TV·지하 장치 배선도",
+      "instruction": "CRT와 바닥 장치의 전력 경로가 이어져 있다.",
+      "completeFlag": "WorkshopWiringSeen",
+      "hints": [
+        "CRT에서 바닥으로 내려가는 선을 찾는다.",
+        "전력 경로의 종착점을 확인한다.",
+        "자세히 조사해 연결 기록을 남긴다."
+      ],
+      "puzzleId": "ch2.wiring",
+      "activeEra": 2001,
+      "hotspotId": "Workshop_Workbench",
+      "prerequisiteFlags": [
+        "TubeTestNormal"
+      ],
+      "solvedFlag": "WorkshopWiringSeen",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH2.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH2.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2021,
+          "textId": "CH2.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "traced"
+        },
+        {
+          "era": 1981,
+          "stateId": "traced"
+        },
+        {
+          "era": 2001,
+          "stateId": "traced"
+        },
+        {
+          "era": 2021,
+          "stateId": "traced"
+        }
+      ]
+    },
+    {
+      "id": "ch2.repair_journal",
+      "closeupId": "WKS-Z05",
+      "ruleType": "era_evidence",
+      "title": "진우의 수리 기록",
+      "instruction": "현재 연도 기록 읽기",
+      "clueFlag": "Journal",
+      "completeFlag": "AllJournalPagesSeen",
+      "chapterTwo": true,
+      "hints": [
+        "기록장은 시대마다 내용이 다르다.",
+        "한 시대의 페이지만 읽어서는 부족하다.",
+        "1961·1981·2001·2021에서 각각 기록을 읽는다."
+      ],
+      "puzzleId": "ch2.repair_journal",
+      "activeEra": 2021,
+      "hotspotId": "Workshop_RepairLog",
+      "prerequisiteFlags": [],
+      "solvedFlag": "AllJournalPagesSeen",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1961,
+          "textId": "CH2.PUZZLE.INACTIVE.1961"
+        },
+        {
+          "era": 1981,
+          "textId": "CH2.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2001,
+          "textId": "CH2.PUZZLE.INACTIVE.2001"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "restored"
+        },
+        {
+          "era": 1981,
+          "stateId": "restored"
+        },
+        {
+          "era": 2001,
+          "stateId": "restored"
+        },
+        {
+          "era": 2021,
+          "stateId": "restored"
+        }
+      ]
+    },
+    {
+      "id": "ch2.folding_crank",
+      "closeupId": "WKS-I01",
+      "ruleType": "crank",
+      "title": "접이식 크랭크",
+      "hints": [
+        "이 물건은 모든 시대에 존재하지 않는다.",
+        "가장 오래된 작업실을 확인한다.",
+        "1961년에 획득한 뒤 인벤토리에서 선택하고 HOLD한다."
+      ],
+      "puzzleId": "ch2.folding_crank",
+      "activeEra": 1961,
+      "hotspotId": "Workshop_FoldingCrank",
+      "prerequisiteFlags": [
+        "FloorPlanSeen"
+      ],
+      "solvedFlag": "FoldingCrankHeld",
+      "inactiveTextIdByEra": [
+        {
+          "era": 1981,
+          "textId": "CH2.PUZZLE.INACTIVE.1981"
+        },
+        {
+          "era": 2001,
+          "textId": "CH2.PUZZLE.INACTIVE.2001"
+        },
+        {
+          "era": 2021,
+          "textId": "CH2.PUZZLE.INACTIVE.2021"
+        }
+      ],
+      "resultStateByEra": [
+        {
+          "era": 1961,
+          "stateId": "acquired"
+        },
+        {
+          "era": 1981,
+          "stateId": "acquired"
+        },
+        {
+          "era": 2001,
+          "stateId": "acquired"
+        },
+        {
+          "era": 2021,
+          "stateId": "acquired"
+        }
+      ]
+    }
+  ]
+}

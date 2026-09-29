@@ -15,15 +15,53 @@ namespace ChannelZero.Tests.EditMode
             return NarrativeTextCatalog.FromJson(asset.text);
         }
 
+        private static NarrativeTextCatalog LoadChapterOneV2Catalog()
+        {
+            TextAsset asset = Resources.Load<TextAsset>("ChannelZero/Data/narrative_chapter1_v2_ko-KR");
+            Assert.That(asset, Is.Not.Null);
+            return NarrativeTextCatalog.FromJson(asset.text);
+        }
+
         [Test]
-        public void AuthoredJson_DeserializesWith83UniqueIdsAndRequiredTargets()
+        public void ChapterOneV2_UsesAnonymousChildSpeakerAndNoTvChildFlag()
+        {
+            TextAsset asset = Resources.Load<TextAsset>("ChannelZero/Data/narrative_chapter1_v2_ko-KR");
+            Assert.That(asset, Is.Not.Null);
+            NarrativeTextCatalog catalog = LoadChapterOneV2Catalog();
+            var childLines = catalog.Entries.Where(entry => entry.type == "dialogue" &&
+                entry.id.Contains(".CHILD.")).ToArray();
+
+            Assert.That(childLines, Has.Length.GreaterThanOrEqualTo(3));
+            Assert.That(childLines.All(entry => entry.speaker == "아이"), Is.True);
+            Assert.That(asset.text, Does.Not.Contain("미나"));
+            Assert.That(asset.text, Does.Not.Contain("ChildTVIntroSeen"));
+            Assert.That(asset.text, Does.Not.Contain("수상기"));
+        }
+
+        [Test]
+        public void LocalizedText_ResolvesByStableKeyAndKeepsFallbackForFutureLocales()
+        {
+            NarrativeTextCatalog catalog = LoadChapterOneV2Catalog();
+            NarrativeTextLocalizer localizer = new(catalog);
+
+            Assert.That(localizer.Locale, Is.EqualTo("ko-KR"));
+            Assert.That(localizer.Resolve("CH1.LIVING.CHILD.DIALOGUE.INTRO_01", "fallback"),
+                Is.EqualTo("이번에는 혼자 왔네요."));
+            Assert.That(localizer.Resolve("MISSING.KEY", "fallback"), Is.EqualTo("fallback"));
+            Assert.That(NarrativeTextCatalog.Load("en-US").Locale, Is.EqualTo("ko-KR"),
+                "A missing locale must fall back to the authored Korean table until that locale is added.");
+        }
+
+        [Test]
+        public void AuthoredJson_DeserializesWithUniqueIdsAndRequiredTargets()
         {
             NarrativeTextCatalog catalog = LoadCatalog();
 
             Assert.That(catalog.SchemaVersion, Is.EqualTo(1));
             Assert.That(catalog.Locale, Is.EqualTo("ko-KR"));
-            Assert.That(catalog.Entries, Has.Count.EqualTo(83));
-            Assert.That(catalog.Entries.Select(entry => entry.id).Distinct().Count(), Is.EqualTo(83));
+            Assert.That(catalog.Entries, Has.Count.GreaterThanOrEqualTo(107));
+            Assert.That(catalog.Entries.Select(entry => entry.id).Distinct().Count(),
+                Is.EqualTo(catalog.Entries.Count));
             string[] targets = catalog.Entries.Select(entry => entry.target).Distinct().ToArray();
             Assert.That(targets, Is.SupersetOf(new[]
             {
@@ -83,6 +121,23 @@ namespace ChannelZero.Tests.EditMode
                 new NarrativeTextContext(restored).SetFlag("CrtPowered", false).SetFlag("CrtNoiseSeen", true));
             Assert.That(entries.Select(entry => entry.id), Does.Not.Contain("CH1.LIVING.CRT.MONO.UNPLUGGED"));
             Assert.That(entries.Select(entry => entry.id), Does.Contain("CH1.LIVING.CRT.DESC.UNPLUGGED"));
+        }
+
+        [Test]
+        public void FamilyPhotoClues_ExposeEveryRugDigitInItsPlayableInteraction()
+        {
+            NarrativeTextResolver resolver = new NarrativeTextResolver(LoadCatalog());
+            ChannelZeroSessionState state = ChannelZeroSessionState.CreateNew();
+            NarrativeTextContext context = new NarrativeTextContext(state);
+
+            Assert.That(resolver.Resolve("LivingRoom", "Living_Photos", ChannelEra.Year1961,
+                "open_closeup", context).Single().text, Does.Contain("2"));
+            Assert.That(resolver.Resolve("LivingRoom", "Living_Photos", ChannelEra.Year1981,
+                "open_closeup", context).Single().text, Does.Contain("7"));
+            Assert.That(resolver.Resolve("LivingRoom", "Living_Photos", ChannelEra.Year2001,
+                "open_closeup", context).Single().text, Does.Contain("4"));
+            Assert.That(resolver.Resolve("LivingRoom", "Living_Photos", ChannelEra.Year2021,
+                "open_closeup", context).Single().text, Does.Contain("9"));
         }
 
         private sealed class MemoryStore : IChannelZeroSaveStore

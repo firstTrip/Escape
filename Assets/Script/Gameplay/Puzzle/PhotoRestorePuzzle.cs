@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PhotoRestorePuzzle : InteractableHotspot
+public class PhotoRestorePuzzle : InteractableHotspot, IPuzzle
 {
     [SerializeField] private InventoryItemSO photoCombinedItem;
     [SerializeField] private InventoryItemSO razorBladeItem;
@@ -22,22 +22,22 @@ public class PhotoRestorePuzzle : InteractableHotspot
         bool hasItems = inv != null && inv.Has(photoCombinedItem) && inv.Has(razorBladeItem);
         if (!hasItems)
         {
-            SubtitleUI.Instance?.ShowLine(needItemsLine);
+            SubtitleUI.Instance?.ShowFeedback(needItemsLine);
             return;
         }
 
         switch (stage)
         {
             case 0:
-                ExaminePanelUI.Instance?.Show(backSprite, backText);
+                ExaminePanelUI.Instance?.ShowDocument(backSprite, backText);
                 stage = 1;
                 break;
             case 1:
-                ExaminePanelUI.Instance?.Show(aloneSprite, aloneText);
+                ExaminePanelUI.Instance?.ShowDocument(aloneSprite, aloneText);
                 stage = 2;
                 break;
             default:
-                ExaminePanelUI.Instance?.Show(absenceSprite, absenceText);
+                ExaminePanelUI.Instance?.ShowDocument(absenceSprite, absenceText);
                 IsSolved = true;
                 break;
         }

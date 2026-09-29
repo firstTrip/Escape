@@ -2,19 +2,8 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LockCodePuzzleController : InteractableHotspot
+public class LockCodePuzzleController : NumericCodePuzzleBase
 {
-    [Header("Answer")]
-    [SerializeField] private int[] correctCode = { 3, 1, 3 };
-
-    [Header("Panel")]
-    [SerializeField] private GameObject panelRoot;
-    [SerializeField] private Text[] digitLabels;
-    [SerializeField] private Button[] digitUpButtons;
-    [SerializeField] private Button[] digitDownButtons;
-    [SerializeField] private Button confirmButton;
-    [SerializeField] private Button closeButton;
-
     [Header("Reward")]
     [SerializeField] private InventoryItemSO keyItem;
     [SerializeField] private InventoryItemSO lighterItem;
@@ -27,79 +16,22 @@ public class LockCodePuzzleController : InteractableHotspot
     [TextArea][SerializeField] private string wrongLine = "숫자가 맞지 않는 것 같다.";
 
     public event Action OnSolved;
-    public bool IsSolved { get; private set; }
-
-    private int[] digits;
-
-    private void Awake()
+    protected override int[] DefaultCode => new[] { 3, 1, 3 };
+    protected override void HandleIncorrectAnswer()
     {
-        digits = new int[correctCode.Length];
-        int buttonCount = Mathf.Min(digitUpButtons?.Length ?? 0, digitDownButtons?.Length ?? 0);
-        for (int i = 0; i < buttonCount; i++)
-        {
-            int idx = i;
-            if (digitUpButtons[idx] != null)
-                digitUpButtons[idx].onClick.AddListener(() => ChangeDigit(idx, 1));
-            if (digitDownButtons[idx] != null)
-                digitDownButtons[idx].onClick.AddListener(() => ChangeDigit(idx, -1));
-        }
-        if (confirmButton != null) confirmButton.onClick.AddListener(TryConfirm);
-        if (closeButton != null) closeButton.onClick.AddListener(ClosePanel);
-        if (panelRoot != null) panelRoot.SetActive(false);
-        RefreshLabels();
+        if (sfxSource != null && wrongClip != null)
+            sfxSource.PlayOneShot(wrongClip);
+        SubtitleUI.Instance?.ShowFeedback(wrongLine);
     }
 
-    protected override void OnInteract()
+    protected override void HandleSolved()
     {
-        if (IsSolved) return;
-        if (panelRoot != null) panelRoot.SetActive(true);
-    }
-
-    private void ChangeDigit(int index, int delta)
-    {
-        digits[index] = ((digits[index] + delta) % 10 + 10) % 10;
-        RefreshLabels();
-    }
-
-    private void RefreshLabels()
-    {
-        if (digitLabels == null) return;
-        for (int i = 0; i < digitLabels.Length; i++)
-        {
-            if (digitLabels[i] != null)
-                digitLabels[i].text = digits[i].ToString();
-        }
-    }
-
-    private void TryConfirm()
-    {
-        bool match = true;
-        for (int i = 0; i < correctCode.Length; i++)
-        {
-            if (digits[i] != correctCode[i]) { match = false; break; }
-        }
-
-        if (!match)
-        {
-            if (sfxSource != null && wrongClip != null) sfxSource.PlayOneShot(wrongClip);
-            SubtitleUI.Instance?.ShowLine(wrongLine);
-            return;
-        }
-
-        IsSolved = true;
         if (sfxSource != null && openClip != null) sfxSource.PlayOneShot(openClip);
         InventoryManager.Instance?.Add(keyItem);
         InventoryManager.Instance?.Add(lighterItem);
         if (lockedVisual != null) lockedVisual.enabled = false;
         if (openVisual != null) openVisual.enabled = true;
-        SubtitleUI.Instance?.ShowLine(solvedLine);
-        ClosePanel();
-        Interactable = false;
+        SubtitleUI.Instance?.ShowFeedback(solvedLine);
         OnSolved?.Invoke();
-    }
-
-    private void ClosePanel()
-    {
-        if (panelRoot != null) panelRoot.SetActive(false);
     }
 }

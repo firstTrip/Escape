@@ -1,13 +1,14 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ExaminePanelUI : MonoBehaviour
+public class ExaminePanelUI : MonoBehaviour, IPuzzleDocumentView
 {
     public static ExaminePanelUI Instance { get; private set; }
 
     [SerializeField] private GameObject root;
     [SerializeField] private Image artwork;
-    [SerializeField] private Text bodyText;
+    [SerializeField] private TMP_Text bodyText;
     [SerializeField] private Button closeButton;
 
     public bool IsOpen => root != null && root.activeSelf;
@@ -20,6 +21,8 @@ public class ExaminePanelUI : MonoBehaviour
             return;
         }
         Instance = this;
+        if (bodyText == null)
+            bodyText = transform.Find("BodyText")?.GetComponent<TMP_Text>();
         if (closeButton != null)
             closeButton.onClick.AddListener(Close);
         if (root != null)
@@ -38,6 +41,8 @@ public class ExaminePanelUI : MonoBehaviour
         if (bodyText != null)
             bodyText.text = text ?? "";
     }
+
+    public void ShowDocument(Sprite artworkSprite, string body) => Show(artworkSprite, body);
 
     public void Close()
     {

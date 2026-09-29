@@ -3,7 +3,8 @@
   "rootNamespace": "ChannelZero.Tests.PlayMode",
   "references": [
     "ChannelZero.Runtime",
-    "Unity.ugui"
+    "Unity.ugui",
+    "Unity.TextMeshPro"
   ],
   "optionalUnityReferences": [
     "TestAssemblies"

@@ -85,6 +85,47 @@ namespace ChannelZero.Tests.EditMode
         }
 
         [Test]
+        public void SaveRoundTrip_PreservesToolboxPickupAndOneTimeHighlightState()
+        {
+            MemoryStore store = new();
+            ChannelZeroSaveService service = new(store);
+            ChannelZeroSessionState state = ChannelZeroSessionState.CreateNew();
+            state.MoveTo(ChannelZeroIds.LivingRoom, StoryChapter.Chapter1);
+            state.AddItem(ChannelZeroPuzzleIds.Screwdriver);
+            state.SetPuzzleState(ChannelZeroPuzzleIds.Toolbox, "open");
+            state.SetFlag("ToolboxScrewdriverTaken");
+            state.MarkTextSeen("tutorial:toolbox_screwdriver");
+
+            service.Save(state);
+            Assert.That(service.TryLoad(out ChannelZeroSessionState restored), Is.True);
+
+            Assert.That(restored.HasItem(ChannelZeroPuzzleIds.Screwdriver), Is.True);
+            Assert.That(restored.GetFlag("ToolboxScrewdriverTaken"), Is.True);
+            Assert.That(restored.GetPuzzleState(ChannelZeroPuzzleIds.Toolbox), Is.EqualTo("open"));
+            Assert.That(restored.HasSeenText("tutorial:toolbox_screwdriver"), Is.True);
+            ChannelZeroPuzzleService puzzles = new(new ChannelZeroBuiltInPuzzleRegistry(), restored);
+            Assert.That(puzzles.EvaluateAccess(ChannelZeroIds.LivingToolboxCloseup).Mode,
+                Is.EqualTo(PuzzleInteractionMode.ResultOnly));
+        }
+
+        [Test]
+        public void SaveLoad_V4DoesNotBackfillRemovedMasterTapeFlow()
+        {
+            MemoryStore store = new();
+            ChannelZeroSaveService service = new(store);
+            ChannelZeroSessionState state = ChannelZeroSessionState.CreateNew();
+            state.AddItem(ChannelZeroPuzzleIds.MasterTape);
+            Assert.That(state.GetFlag("RecMasterComplete"), Is.False);
+
+            service.Save(state);
+            Assert.That(service.TryLoad(out ChannelZeroSessionState restored), Is.True);
+
+            Assert.That(restored.GetFlag("RecMasterComplete"), Is.False);
+            Assert.That(restored.GetPuzzleState(ChannelZeroPuzzleIds.RecMaster),
+                Is.EqualTo("locked"));
+        }
+
+        [Test]
         public void CloseupExit_RestoresOriginRoomEraAndVisualState()
         {
             ChannelZeroSessionState state = ChannelZeroSessionState.CreateNew();

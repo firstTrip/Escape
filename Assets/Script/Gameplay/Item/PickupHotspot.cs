@@ -20,7 +20,7 @@ public class PickupHotspot : InteractableHotspot
         if (sfxSource != null && pickupClip != null)
             sfxSource.PlayOneShot(pickupClip);
         if (!string.IsNullOrEmpty(pickupLine))
-            SubtitleUI.Instance?.ShowLine(pickupLine);
+            SubtitleUI.Instance?.ShowFeedback(pickupLine);
         if (visual != null)
             visual.enabled = false;
 

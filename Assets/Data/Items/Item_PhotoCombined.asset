@@ -11,8 +11,9 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7665409204420ec16407241c32be5d6a, type: 3}
   m_Name: Item_PhotoCombined
-  m_EditorClassIdentifier:
-  itemId: "photo_combined"
-  displayName: "우리 집, 3월 13일"
-  description: "이사 온 첫날, 텅 빈 집에서 찍은 사진."
-  icon: {fileID: 21300000, guid: 27ba120a250dfb5e36fdb6ce1219e400, type: 3}
+  m_EditorClassIdentifier: 
+  itemId: photo_combined
+  displayName: "\uC6B0\uB9AC \uC9D1, 3\uC6D4 13\uC77C"
+  description: "\uC774\uC0AC \uC628 \uCCAB\uB0A0, \uD145 \uBE48 \uC9D1\uC5D0\uC11C
+    \uCC0D\uC740 \uC0AC\uC9C4."
+  icon: {fileID: 21300000, guid: e1379eac08efefa42b0ce03b5fff22c6, type: 3}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ChannelZero.Runtime.Core;
 using ChannelZero.Runtime.Presentation;
 using TMPro;
@@ -25,8 +26,13 @@ public static class ChannelZeroVerticalSliceSceneCreator
     private const string WorkshopRoot = "Assets/Resources/ChannelZero/PlayRooms/Workshop";
     private const string CloseupRoot = "Assets/Resources/ChannelZero/Closeups";
     private const string HudOverlayPath = "Assets/Resources/ChannelZero/UI/HUD/ui_ingame_crt_hud_overlay_v04.png";
+    private const string KoreanFontSourcePath = "Assets/Fonts/NotoSansKR-Regular.ttf";
+    private const string KoreanFontAssetDirectory = "Assets/Resources/ChannelZero/Fonts";
+    private const string KoreanFontAssetPath = KoreanFontAssetDirectory + "/NotoSansKR-Regular SDF.asset";
+    private const string TmpSettingsPath = "Assets/TextMesh Pro/Resources/TMP Settings.asset";
     private const string HudApplyRequestPath = "Temp/ChannelZeroApplyCrtHud.request";
     private static readonly Vector2 ReferenceResolution = new(1920f, 1080f);
+    private static TMP_FontAsset koreanUiFont;
 
     private readonly struct HotspotSpec
     {
@@ -114,6 +120,47 @@ public static class ChannelZeroVerticalSliceSceneCreator
         Debug.Log("CHANNEL_ZERO_CRT_HUD_PREVIEW_CAPTURED");
     }
 
+    [MenuItem("Tools/Channel Zero/Capture Closeup UI Preview")]
+    public static void CaptureCloseupUiPreviewBatch()
+    {
+        const string outputPath = "Assets/Resources/ChannelZero/Previews/channelzero_closeup_ui_preview_v01.png";
+        Scene scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
+        ValidateScene(scene);
+
+        CanvasGroup group = FindSceneComponent<CanvasGroup>(scene, "CloseupCanvas");
+        ChannelZeroCloseupCanvasController closeup =
+            FindSceneComponent<ChannelZeroCloseupCanvasController>(scene, "CloseupCanvas");
+        Image artwork = FindSceneComponent<Image>(scene, "Artwork");
+        if (group == null || closeup == null || artwork == null)
+            throw new InvalidOperationException("Closeup preview hierarchy is incomplete.");
+
+        group.alpha = 1f;
+        group.interactable = true;
+        group.blocksRaycasts = true;
+        PuzzleView sample = new()
+        {
+            closeupId = ChannelZeroIds.LivingNumberRugCloseup,
+            title = "카펫 아래의 숫자",
+            body = "닳은 자국이 네 자리 순서를 가리킨다. 관찰한 숫자를 차례대로 입력하자.",
+            artworkStateId = ChannelZeroIds.DefaultVisualState,
+            actions = new List<PuzzleActionView>
+            {
+                new("digit:2", "2"), new("digit:7", "7"), new("digit:4", "4"),
+                new("digit:9", "9"), new("system:hint", "힌트"),
+            },
+        };
+        closeup.PresentPuzzle(sample);
+        artwork.sprite = AssetDatabase.LoadAssetAtPath<Sprite>(
+            CloseupRoot + "/LivingRoom/LIV-Z04/liv_z04_number_rug_default_v01.png");
+        artwork.color = Color.white;
+
+        Camera camera = UnityEngine.Object.FindFirstObjectByType<Camera>();
+        if (camera == null)
+            throw new InvalidOperationException("Preview camera is missing.");
+        CaptureCameraTo(camera, outputPath);
+        Debug.Log("CHANNEL_ZERO_CLOSEUP_UI_PREVIEW_CAPTURED");
+    }
+
     [MenuItem("Tools/Channel Zero/Play Vertical Slice Scene")]
     public static void PlayScene()
     {
@@ -128,6 +175,8 @@ public static class ChannelZeroVerticalSliceSceneCreator
         AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
         ConfigureHudOverlayImporter();
         ConfigureCloseupImporters();
+        koreanUiFont = CreateOrUpdateKoreanFontAsset();
+        ConfigureGlobalTmpSettings(koreanUiFont);
         ChannelZeroRoomCatalog catalog = CreateOrUpdateCatalog();
         ChannelZeroCloseupCatalog closeupCatalog = CreateOrUpdateCloseupCatalog();
 
@@ -138,6 +187,7 @@ public static class ChannelZeroVerticalSliceSceneCreator
 
         GameObject runtimeRoot = new("ChannelZeroRuntime");
         ChannelZeroVerticalSliceController controller = runtimeRoot.AddComponent<ChannelZeroVerticalSliceController>();
+        runtimeRoot.AddComponent<ChannelZeroVisualCaptureBootstrap>();
 
         RectTransform roomRoot = CreateRect("RoomView", canvas.transform);
         Stretch(roomRoot);
@@ -158,14 +208,17 @@ public static class ChannelZeroVerticalSliceSceneCreator
         RectTransform chrome = CreateRect("CrtHud", canvas.transform);
         Stretch(chrome);
         chrome.SetAsLastSibling();
-        CreateCrtHud(chrome, controller, out Text status, out Button backButton,
-            out Text channelReadout, out Text operationReadout);
+        CanvasGroup chromeGroup = chrome.gameObject.AddComponent<CanvasGroup>();
+        CreateCrtHud(chrome, controller, out ChannelZeroHudController hudController,
+            out TMP_Text status, out Button backButton,
+            out TMP_Text channelReadout, out TMP_Text operationReadout);
 
-        ChannelZeroCloseupCanvasController closeupCanvas = CreateCloseupCanvas(canvas.transform, closeupCatalog);
-        closeupCanvas.transform.SetAsLastSibling();
+        ChannelZeroCloseupCanvasController closeupCanvas =
+            CreateCloseupCanvas(canvas.transform, chromeGroup, status, closeupCatalog);
+        closeupCanvas.transform.SetSiblingIndex(chrome.GetSiblingIndex());
 
-        controller.EditorConfigure(presenter, closeupCanvas, status, backButton,
-            channelReadout, operationReadout, restore: false);
+        controller.EditorConfigure(presenter, closeupCanvas, hudController, status, backButton,
+            channelReadout, operationReadout, restore: true);
 
         Directory.CreateDirectory(Path.GetDirectoryName(ScenePath) ?? "Assets/Scenes");
         EditorSceneManager.SaveScene(scene, ScenePath);
@@ -185,9 +238,9 @@ public static class ChannelZeroVerticalSliceSceneCreator
         if (camera == null)
             throw new InvalidOperationException("Preview camera is missing.");
 
-        Text channel = FindSceneComponent<Text>(scene, "ChannelReadout");
-        Text operation = FindSceneComponent<Text>(scene, "OperationReadout");
-        Text status = FindSceneComponent<Text>(scene, "HudStatus");
+        TMP_Text channel = FindSceneComponent<TMP_Text>(scene, "ChannelReadout");
+        TMP_Text operation = FindSceneComponent<TMP_Text>(scene, "OperationReadout");
+        TMP_Text status = FindSceneComponent<TMP_Text>(scene, "HudStatus");
         if (channel != null)
             channel.text = "CH 2001";
         if (operation != null)
@@ -195,6 +248,11 @@ public static class ChannelZeroVerticalSliceSceneCreator
         if (status != null)
             status.text = "2001년 현관 — 오른쪽 다이얼과 인벤토리를 확인하세요.";
 
+        CaptureCameraTo(camera, outputPath);
+    }
+
+    private static void CaptureCameraTo(Camera camera, string outputPath)
+    {
         const int width = 1920;
         const int height = 1080;
         RenderTexture renderTexture = new(width, height, 24, RenderTextureFormat.ARGB32);
@@ -290,8 +348,134 @@ public static class ChannelZeroVerticalSliceSceneCreator
         }
     }
 
+    private static TMP_FontAsset CreateOrUpdateKoreanFontAsset()
+    {
+        Font source = AssetDatabase.LoadAssetAtPath<Font>(KoreanFontSourcePath);
+        if (source == null)
+            throw new FileNotFoundException("Korean UI font is missing.", KoreanFontSourcePath);
+
+        TMP_FontAsset existing = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(KoreanFontAssetPath);
+        if (existing != null)
+        {
+            ConfigureDynamicKoreanFont(existing, source);
+            existing.atlasPopulationMode = AtlasPopulationMode.Dynamic;
+            existing.isMultiAtlasTexturesEnabled = true;
+            AddProjectCharacters(existing);
+            EditorUtility.SetDirty(existing);
+            AssetDatabase.SaveAssets();
+            return existing;
+        }
+
+        Directory.CreateDirectory(KoreanFontAssetDirectory);
+        TMP_FontAsset created = TMP_FontAsset.CreateFontAsset(
+            KoreanFontSourcePath, 0, 90, 9,
+            UnityEngine.TextCore.LowLevel.GlyphRenderMode.SDFAA, 1024, 1024);
+        if (created == null)
+            throw new InvalidOperationException("Failed to create the Korean TMP font asset.");
+
+        created.name = "NotoSansKR-Regular SDF";
+        ConfigureDynamicKoreanFont(created, source);
+        created.atlasPopulationMode = AtlasPopulationMode.Dynamic;
+        created.isMultiAtlasTexturesEnabled = true;
+        AddProjectCharacters(created);
+        AssetDatabase.CreateAsset(created, KoreanFontAssetPath);
+        if (created.atlasTextures != null)
+        {
+            foreach (Texture2D atlas in created.atlasTextures)
+                if (atlas != null && !AssetDatabase.Contains(atlas))
+                    AssetDatabase.AddObjectToAsset(atlas, created);
+        }
+        if (created.material != null && !AssetDatabase.Contains(created.material))
+            AssetDatabase.AddObjectToAsset(created.material, created);
+        EditorUtility.SetDirty(created);
+        AssetDatabase.SaveAssets();
+        return created;
+    }
+
+    private static void ConfigureDynamicKoreanFont(TMP_FontAsset fontAsset, Font source)
+    {
+        SerializedObject serialized = new(fontAsset);
+        SerializedProperty sourceFont = serialized.FindProperty("m_SourceFontFile");
+        if (sourceFont != null)
+            sourceFont.objectReferenceValue = source;
+        SerializedProperty sourcePath = serialized.FindProperty("m_SourceFontFilePath");
+        if (sourcePath != null)
+            sourcePath.stringValue = KoreanFontSourcePath;
+        SerializedProperty sourceGuid = serialized.FindProperty("m_SourceFontFileGUID");
+        if (sourceGuid != null)
+            sourceGuid.stringValue = AssetDatabase.AssetPathToGUID(KoreanFontSourcePath);
+        SerializedProperty editorReference = serialized.FindProperty("m_SourceFontFile_EditorRef");
+        if (editorReference != null)
+            editorReference.objectReferenceValue = source;
+        SerializedProperty clearDynamicData = serialized.FindProperty("m_ClearDynamicDataOnBuild");
+        if (clearDynamicData != null)
+            clearDynamicData.boolValue = false;
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+    }
+
+    private static void ConfigureGlobalTmpSettings(TMP_FontAsset koreanFont)
+    {
+        TMP_Settings settings = AssetDatabase.LoadAssetAtPath<TMP_Settings>(TmpSettingsPath);
+        if (settings == null)
+            throw new FileNotFoundException("TMP Settings asset is missing.", TmpSettingsPath);
+
+        SerializedObject serialized = new(settings);
+        SerializedProperty defaultFont = serialized.FindProperty("m_defaultFontAsset");
+        if (defaultFont != null)
+            defaultFont.objectReferenceValue = koreanFont;
+        SerializedProperty clearDynamicData = serialized.FindProperty("m_ClearDynamicDataOnBuild");
+        if (clearDynamicData != null)
+            clearDynamicData.boolValue = false;
+        SerializedProperty fallbacks = serialized.FindProperty("m_fallbackFontAssets");
+        if (fallbacks != null)
+        {
+            bool exists = false;
+            for (int i = 0; i < fallbacks.arraySize; i++)
+                exists |= fallbacks.GetArrayElementAtIndex(i).objectReferenceValue == koreanFont;
+            if (!exists)
+            {
+                int index = fallbacks.arraySize;
+                fallbacks.InsertArrayElementAtIndex(index);
+                fallbacks.GetArrayElementAtIndex(index).objectReferenceValue = koreanFont;
+            }
+        }
+        serialized.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(settings);
+        AssetDatabase.SaveAssets();
+    }
+
+    private static void AddProjectCharacters(TMP_FontAsset fontAsset)
+    {
+        HashSet<char> characters = new();
+        for (char character = ' '; character <= '~'; character++)
+            characters.Add(character);
+
+        string[] roots = { "Assets/ChannelZero", "Assets/Resources/ChannelZero", "Assets/Editor" };
+        foreach (string root in roots)
+        {
+            if (!Directory.Exists(root))
+                continue;
+            foreach (string path in Directory.GetFiles(root, "*.*", SearchOption.AllDirectories))
+            {
+                string extension = Path.GetExtension(path);
+                if (!string.Equals(extension, ".cs", StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(extension, ".json", StringComparison.OrdinalIgnoreCase))
+                    continue;
+                foreach (char character in File.ReadAllText(path))
+                    if (!char.IsControl(character))
+                        characters.Add(character);
+            }
+        }
+
+        string requested = new(characters.OrderBy(character => character).ToArray());
+        if (!fontAsset.TryAddCharacters(requested, out string missing, true)
+            && !string.IsNullOrEmpty(missing))
+            Debug.LogWarning($"CHANNEL_ZERO_TMP_MISSING_GLYPHS: {missing}");
+    }
+
     private static void CreateCrtHud(RectTransform parent, ChannelZeroVerticalSliceController controller,
-        out Text status, out Button backButton, out Text channelReadout, out Text operationReadout)
+        out ChannelZeroHudController hud,
+        out TMP_Text status, out Button backButton, out TMP_Text channelReadout, out TMP_Text operationReadout)
     {
         Sprite overlaySprite = AssetDatabase.LoadAssetAtPath<Sprite>(HudOverlayPath);
         if (overlaySprite == null)
@@ -303,21 +487,16 @@ public static class ChannelZeroVerticalSliceSceneCreator
         overlay.preserveAspect = false;
         overlay.raycastTarget = false;
 
-        status = CreateText("HudStatus", parent, 20, TextAnchor.MiddleCenter);
+        status = CreateTmpText("HudStatus", parent, 20, TextAlignmentOptions.Center);
         PlaceBottomLeft(status.rectTransform, new Vector2(820f, 190f), new Vector2(1180f, 42f));
         status.color = new Color(0.86f, 0.80f, 0.66f, 1f);
         status.raycastTarget = false;
 
-        CreateTransparentHudButton("RecButton", parent, new Vector2(195f, 100f),
-            new Vector2(180f, 84f), controller.SelectRec);
-        CreateTransparentHudButton("PlayButton", parent, new Vector2(420f, 100f),
-            new Vector2(180f, 84f), controller.SelectPlay);
-        CreateTransparentHudButton("LoadButton", parent, new Vector2(625f, 100f),
-            new Vector2(180f, 84f), controller.SelectLoad);
-        CreateTransparentHudButton("RewButton", parent, new Vector2(825f, 100f),
-            new Vector2(180f, 84f), controller.SelectRew);
-        CreateTransparentHudButton("HoldButton", parent, new Vector2(1030f, 100f),
-            new Vector2(180f, 84f), controller.SelectHold);
+        Image retiredControlsMask = CreateImage("RetiredControlsMask", parent,
+            new Color(0.015f, 0.012f, 0.01f, 0.98f));
+        PlaceBottomLeft(retiredControlsMask.rectTransform, new Vector2(612f, 100f),
+            new Vector2(1080f, 84f));
+        retiredControlsMask.raycastTarget = false;
         backButton = CreateTransparentHudButton("BackButton", parent, new Vector2(1235f, 100f),
             new Vector2(180f, 84f), controller.GoBack);
 
@@ -330,7 +509,7 @@ public static class ChannelZeroVerticalSliceSceneCreator
         channelReadout = null;
         operationReadout = null;
 
-        ChannelZeroHudController hud = parent.gameObject.AddComponent<ChannelZeroHudController>();
+        hud = parent.gameObject.AddComponent<ChannelZeroHudController>();
         UnityEngine.Events.UnityAction[] actions =
         {
             hud.SelectSlot0,
@@ -343,10 +522,25 @@ public static class ChannelZeroVerticalSliceSceneCreator
         };
         float[] slotCentersY = { 977f, 858f, 740f, 622f, 503f, 385f, 266f };
         Image[] selectionFrames = new Image[7];
+        Button[] inventorySlots = new Button[7];
+        TMP_Text[] inventoryLabels = new TMP_Text[7];
         for (int i = 0; i < selectionFrames.Length; i++)
         {
             Button slot = CreateTransparentHudButton($"InventorySlot_{i}", parent,
                 new Vector2(1810f, slotCentersY[i]), new Vector2(112f, 112f), actions[i]);
+            inventorySlots[i] = slot;
+            TextMeshProUGUI itemLabel = CreateTmpText("ItemLabel", slot.transform, 17,
+                TextAlignmentOptions.Center);
+            Stretch(itemLabel.rectTransform);
+            itemLabel.rectTransform.offsetMin = new Vector2(7f, 7f);
+            itemLabel.rectTransform.offsetMax = new Vector2(-7f, -7f);
+            itemLabel.enableAutoSizing = true;
+            itemLabel.fontSizeMin = 11f;
+            itemLabel.fontSizeMax = 17f;
+            itemLabel.color = new Color(0.94f, 0.82f, 0.58f, 1f);
+            itemLabel.raycastTarget = false;
+            itemLabel.text = string.Empty;
+            inventoryLabels[i] = itemLabel;
             Image frame = CreateImage("Selection", slot.transform, new Color(1f, 0.48f, 0.08f, 0.10f));
             Stretch(frame.rectTransform);
             frame.raycastTarget = false;
@@ -355,7 +549,7 @@ public static class ChannelZeroVerticalSliceSceneCreator
             outline.effectDistance = new Vector2(3f, -3f);
             selectionFrames[i] = frame;
         }
-        hud.EditorConfigure(selectionFrames, 0);
+        hud.EditorConfigure(selectionFrames, inventorySlots, inventoryLabels, koreanUiFont, 0);
     }
 
     private static Button CreateTransparentHudButton(string name, Transform parent, Vector2 center,
@@ -376,13 +570,13 @@ public static class ChannelZeroVerticalSliceSceneCreator
         return button;
     }
 
-    private static Text CreateHudReadout(string name, Transform parent, Vector2 center, Vector2 size,
+    private static TMP_Text CreateHudReadout(string name, Transform parent, Vector2 center, Vector2 size,
         int fontSize)
     {
-        Text text = CreateText(name, parent, fontSize, TextAnchor.MiddleCenter);
+        TextMeshProUGUI text = CreateTmpText(name, parent, fontSize, TextAlignmentOptions.Center);
         PlaceBottomLeft(text.rectTransform, center, size);
         text.color = new Color(0.12f, 0.085f, 0.05f, 1f);
-        text.fontStyle = FontStyle.Bold;
+        text.fontStyle = FontStyles.Bold;
         text.raycastTarget = false;
         return text;
     }
@@ -436,6 +630,8 @@ public static class ChannelZeroVerticalSliceSceneCreator
 
         List<ChannelZeroCloseupCatalog.ArtworkEntry> entries = new()
         {
+            EraCloseup(ChannelZeroIds.LivingToolboxCloseup, ChannelEra.Year2001, CloseupRoot + "/LivingRoom/LIV-Z00/liv_z00_player_toolbox_2001_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingToolboxCloseup, ChannelEra.Year2001, CloseupRoot + "/LivingRoom/LIV-Z00/liv_z00_player_toolbox_2001_acquired_v01.png", "acquired"),
             Closeup(ChannelZeroIds.PrologueServiceRequestCloseup, "default", CloseupRoot + "/Prologue/PRO-Z01/pro_z01_service_request_default_v01.png"),
             Closeup(ChannelZeroIds.LivingCrtFrontCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z01/liv_z01_crt_front_off_v01.png"),
             Closeup(ChannelZeroIds.LivingCrtRearCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z02/liv_z02_crt_rear_closed_v01.png"),
@@ -447,19 +643,36 @@ public static class ChannelZeroVerticalSliceSceneCreator
             Closeup(ChannelZeroIds.LivingTubeStorageCloseup, "open", CloseupRoot + "/LivingRoom/LIV-Z03/liv_z03_tube_case_open_v01.png"),
             Closeup(ChannelZeroIds.LivingTubeStorageCloseup, "acquired", CloseupRoot + "/LivingRoom/LIV-Z03/liv_z03_tube_case_acquired_v01.png"),
             Closeup(ChannelZeroIds.LivingNumberRugCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z04/liv_z04_number_rug_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingNumberRugCloseup, ChannelEra.Year1961, CloseupRoot + "/LivingRoom/LIV-Z04/liv_z04_number_rug_1961_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingNumberRugCloseup, ChannelEra.Year1981, CloseupRoot + "/LivingRoom/LIV-Z04/liv_z04_number_rug_1981_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingNumberRugCloseup, ChannelEra.Year2001, CloseupRoot + "/LivingRoom/LIV-Z04/liv_z04_number_rug_2001_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingNumberRugCloseup, ChannelEra.Year2021, CloseupRoot + "/LivingRoom/LIV-Z04/liv_z04_number_rug_2021_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingNumberRugCloseup, ChannelEra.Year2021, CloseupRoot + "/LivingRoom/LIV-Z04/liv_z04_number_rug_2021_hint_9_v01.png", ChannelZeroIds.RugHint9VisualState),
             Closeup(ChannelZeroIds.LivingMedicalCabinetCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z05/liv_z05_medical_cabinet_default_v01.png"),
             Closeup(ChannelZeroIds.LivingHandTreatmentCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z06/liv_z06_injured_hand_default_v01.png"),
             Closeup(ChannelZeroIds.LivingLockboxCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z07/liv_z07_lockbox_default_v01.png"),
             Closeup(ChannelZeroIds.LivingRecPanelCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z08/liv_z08_rec_panel_default_v01.png"),
             Closeup(ChannelZeroIds.LivingRecSlotsCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z09/liv_z09_tape_slots_default_v01.png"),
             Closeup(ChannelZeroIds.LivingFamilyPhotosCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z10/liv_z10_family_photos_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingFamilyPhotosCloseup, ChannelEra.Year1961, CloseupRoot + "/LivingRoom/LIV-Z10/liv_z10_family_photos_1961_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingFamilyPhotosCloseup, ChannelEra.Year1981, CloseupRoot + "/LivingRoom/LIV-Z10/liv_z10_family_photos_1981_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingFamilyPhotosCloseup, ChannelEra.Year2001, CloseupRoot + "/LivingRoom/LIV-Z10/liv_z10_family_photos_2001_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingFamilyPhotosCloseup, ChannelEra.Year2021, CloseupRoot + "/LivingRoom/LIV-Z10/liv_z10_family_photos_2021_default_v01.png"),
             Closeup(ChannelZeroIds.LivingWiringDiagramCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z11/liv_z11_wiring_diagram_default_v01.png"),
             Closeup(ChannelZeroIds.LivingClockCloseup, "default", CloseupRoot + "/LivingRoom/LIV-Z12/liv_z12_grandfather_clock_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingClockCloseup, ChannelEra.Year1961, CloseupRoot + "/LivingRoom/LIV-Z12/liv_z12_grandfather_clock_1961_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingClockCloseup, ChannelEra.Year1981, CloseupRoot + "/LivingRoom/LIV-Z12/liv_z12_grandfather_clock_1981_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingClockCloseup, ChannelEra.Year2001, CloseupRoot + "/LivingRoom/LIV-Z12/liv_z12_grandfather_clock_2001_default_v01.png"),
+            EraCloseup(ChannelZeroIds.LivingClockCloseup, ChannelEra.Year2021, CloseupRoot + "/LivingRoom/LIV-Z12/liv_z12_grandfather_clock_2021_default_v01.png"),
             Closeup(ChannelZeroIds.WorkshopTubeTesterCloseup, "default", CloseupRoot + "/Workshop/WKS-Z01/wks_z01_tube_tester_default_v01.png"),
             Closeup(ChannelZeroIds.WorkshopPartsDrawerCloseup, "default", CloseupRoot + "/Workshop/WKS-Z02/wks_z02_parts_drawer_default_v01.png"),
             Closeup(ChannelZeroIds.WorkshopFloorPlanCloseup, "default", CloseupRoot + "/Workshop/WKS-Z03/wks_z03_floor_lock_plan_default_v01.png"),
             Closeup(ChannelZeroIds.WorkshopWiringDiagramCloseup, "default", CloseupRoot + "/Workshop/WKS-Z04/wks_z04_power_wiring_default_v01.png"),
             Closeup(ChannelZeroIds.WorkshopRepairLogCloseup, "default", CloseupRoot + "/Workshop/WKS-Z05/wks_z05_repair_journal_default_v01.png"),
+            EraCloseup(ChannelZeroIds.WorkshopRepairLogCloseup, ChannelEra.Year1961, CloseupRoot + "/Workshop/WKS-Z05/wks_z05_repair_journal_1961_default_v01.png"),
+            EraCloseup(ChannelZeroIds.WorkshopRepairLogCloseup, ChannelEra.Year1981, CloseupRoot + "/Workshop/WKS-Z05/wks_z05_repair_journal_1981_default_v01.png"),
+            EraCloseup(ChannelZeroIds.WorkshopRepairLogCloseup, ChannelEra.Year2001, CloseupRoot + "/Workshop/WKS-Z05/wks_z05_repair_journal_2001_default_v01.png"),
+            EraCloseup(ChannelZeroIds.WorkshopRepairLogCloseup, ChannelEra.Year2021, CloseupRoot + "/Workshop/WKS-Z05/wks_z05_repair_journal_2021_default_v01.png"),
             Closeup(ChannelZeroIds.WorkshopKeyCutterCloseup, "default", CloseupRoot + "/Workshop/WKS-Z06/wks_z06_key_cutter_default_v01.png"),
             Closeup(ChannelZeroIds.WorkshopFoldingCrankInspect, "default", CloseupRoot + "/Workshop/WKS-I01/wks_i01_folding_crank_default_v01.png"),
         };
@@ -469,7 +682,8 @@ public static class ChannelZeroVerticalSliceSceneCreator
     }
 
     private static ChannelZeroCloseupCanvasController CreateCloseupCanvas(
-        Transform canvasParent, ChannelZeroCloseupCatalog catalog)
+        Transform canvasParent, CanvasGroup chromeGroup, TMP_Text chromeStatus,
+        ChannelZeroCloseupCatalog catalog)
     {
         RectTransform root = CreateRect("CloseupCanvas", canvasParent);
         Stretch(root);
@@ -478,63 +692,110 @@ public static class ChannelZeroVerticalSliceSceneCreator
         group.interactable = false;
         group.blocksRaycasts = false;
 
-        Image dimmed = CreateImage("DimmedBackdrop", root, new Color(0f, 0f, 0f, 0.78f));
-        Stretch(dimmed.rectTransform);
+        Image inputShield = CreateImage("CloseupInputShield", root, Color.clear);
+        Stretch(inputShield.rectTransform);
+        inputShield.raycastTarget = true;
 
-        Image panel = CreateImage("CloseupPanel", root, new Color(0.08f, 0.07f, 0.06f, 1f));
+        Image panel = CreateImage("MonitorViewport", root, Color.black);
         RectTransform panelRect = panel.rectTransform;
-        panelRect.anchorMin = new Vector2(0.5f, 0.5f);
-        panelRect.anchorMax = new Vector2(0.5f, 0.5f);
+        panelRect.anchorMin = new Vector2(0.04f, 0.18f);
+        panelRect.anchorMax = new Vector2(0.89f, 0.945f);
         panelRect.pivot = new Vector2(0.5f, 0.5f);
-        panelRect.sizeDelta = new Vector2(1500f, 850f);
-        panelRect.anchoredPosition = Vector2.zero;
+        panelRect.offsetMin = Vector2.zero;
+        panelRect.offsetMax = Vector2.zero;
+        panel.gameObject.AddComponent<RectMask2D>();
 
         Image artwork = CreateImage("Artwork", panelRect, new Color(0.16f, 0.14f, 0.12f, 1f));
         Stretch(artwork.rectTransform);
         artwork.raycastTarget = false;
+        artwork.preserveAspect = false;
+
+        Image bottomScrim = CreateImage("BottomTextScrim", panelRect, new Color(0.015f, 0.018f, 0.018f, 0.94f));
+        RectTransform scrimRect = bottomScrim.rectTransform;
+        scrimRect.anchorMin = Vector2.zero;
+        scrimRect.anchorMax = new Vector2(1f, 0.43f);
+        scrimRect.offsetMin = Vector2.zero;
+        scrimRect.offsetMax = Vector2.zero;
+        bottomScrim.raycastTarget = false;
+
+        Image scrimLine = CreateImage("BottomTextAccent", panelRect, new Color(0.66f, 0.43f, 0.14f, 0.9f));
+        RectTransform lineRect = scrimLine.rectTransform;
+        lineRect.anchorMin = new Vector2(0f, 0.43f);
+        lineRect.anchorMax = new Vector2(1f, 0.43f);
+        lineRect.pivot = new Vector2(0.5f, 0.5f);
+        lineRect.sizeDelta = new Vector2(0f, 2f);
+        scrimLine.raycastTarget = false;
 
         RectTransform interactionLayer = CreateRect("InteractionLayer", panelRect);
         Stretch(interactionLayer);
         RectTransform feedbackLayer = CreateRect("FeedbackLayer", panelRect);
         Stretch(feedbackLayer);
+        TextMeshProUGUI selectedItemDescription = CreateTmpText("SelectedItemDescription", feedbackLayer, 20,
+            TextAlignmentOptions.Center);
+        RectTransform selectedItemDescriptionRect = selectedItemDescription.rectTransform;
+        selectedItemDescriptionRect.anchorMin = new Vector2(0.12f, 0.51f);
+        selectedItemDescriptionRect.anchorMax = new Vector2(0.88f, 0.56f);
+        selectedItemDescriptionRect.offsetMin = Vector2.zero;
+        selectedItemDescriptionRect.offsetMax = Vector2.zero;
+        selectedItemDescription.raycastTarget = false;
+        selectedItemDescription.gameObject.SetActive(false);
+
+        TextMeshProUGUI transientFeedback = CreateTmpText("TransientFeedback", feedbackLayer, 23,
+            TextAlignmentOptions.Center);
+        RectTransform transientFeedbackRect = transientFeedback.rectTransform;
+        transientFeedbackRect.anchorMin = new Vector2(0.1f, 0.57f);
+        transientFeedbackRect.anchorMax = new Vector2(0.9f, 0.63f);
+        transientFeedbackRect.offsetMin = Vector2.zero;
+        transientFeedbackRect.offsetMax = Vector2.zero;
+        transientFeedback.color = new Color(0.95f, 0.82f, 0.42f, 1f);
+        transientFeedback.raycastTarget = false;
+        transientFeedback.gameObject.SetActive(false);
+
         RectTransform exactTextLayer = CreateRect("ExactTextLayer", panelRect);
         Stretch(exactTextLayer);
 
         TextMeshProUGUI exactText = CreateTmpText("ExactText", exactTextLayer, 38, TextAlignmentOptions.Center);
         RectTransform exactTextRect = exactText.rectTransform;
-        exactTextRect.anchorMin = new Vector2(0.18f, 0.18f);
-        exactTextRect.anchorMax = new Vector2(0.82f, 0.82f);
-        exactTextRect.offsetMin = Vector2.zero;
-        exactTextRect.offsetMax = Vector2.zero;
-        exactText.color = new Color(0.91f, 0.86f, 0.74f, 1f);
+        exactTextRect.anchorMin = new Vector2(0.08f, 0.255f);
+        exactTextRect.anchorMax = new Vector2(0.92f, 0.42f);
+        exactTextRect.offsetMin = new Vector2(16f, 8f);
+        exactTextRect.offsetMax = new Vector2(-16f, -8f);
+        exactText.fontSize = 30f;
+        exactText.enableAutoSizing = true;
+        exactText.fontSizeMin = 18f;
+        exactText.fontSizeMax = 30f;
+        exactText.fontStyle = FontStyles.Normal;
+        exactText.color = new Color(0.94f, 0.9f, 0.8f, 1f);
+        exactText.textWrappingMode = TextWrappingModes.Normal;
+        exactText.overflowMode = TextOverflowModes.Ellipsis;
         exactText.raycastTarget = false;
 
-        RectTransform inventoryStrip = CreateRect("InventoryStrip", root);
-        inventoryStrip.anchorMin = new Vector2(0.15f, 0f);
-        inventoryStrip.anchorMax = new Vector2(0.85f, 0f);
+        RectTransform inventoryStrip = CreateRect("InventoryStrip", panelRect);
+        inventoryStrip.anchorMin = new Vector2(0.06f, 0.44f);
+        inventoryStrip.anchorMax = new Vector2(0.94f, 0.50f);
         inventoryStrip.pivot = new Vector2(0.5f, 0f);
-        inventoryStrip.anchoredPosition = new Vector2(0f, 10f);
-        inventoryStrip.sizeDelta = new Vector2(0f, 90f);
+        inventoryStrip.offsetMin = Vector2.zero;
+        inventoryStrip.offsetMax = Vector2.zero;
 
-        Button close = CreateCloseButton(root);
+        Button close = CreateCloseButton(panelRect, out TextMeshProUGUI closeLabel);
         ChannelZeroCloseupCanvasController controller =
             root.gameObject.AddComponent<ChannelZeroCloseupCanvasController>();
-        controller.EditorConfigure(group, artwork, interactionLayer, feedbackLayer, exactTextLayer,
-            inventoryStrip, close, exactText, catalog);
+        controller.EditorConfigure(group, chromeGroup, chromeStatus, artwork, interactionLayer, feedbackLayer, exactTextLayer,
+            inventoryStrip, close, exactText, closeLabel, selectedItemDescription, transientFeedback, koreanUiFont, catalog);
         return controller;
     }
 
-    private static Button CreateCloseButton(RectTransform parent)
+    private static Button CreateCloseButton(RectTransform parent, out TextMeshProUGUI label)
     {
         Image image = CreateImage("CloseButton", parent, new Color(0.18f, 0.15f, 0.12f, 0.96f));
         RectTransform rect = image.rectTransform;
         rect.anchorMin = new Vector2(1f, 1f);
         rect.anchorMax = new Vector2(1f, 1f);
         rect.pivot = new Vector2(1f, 1f);
-        rect.anchoredPosition = new Vector2(-28f, -28f);
-        rect.sizeDelta = new Vector2(130f, 54f);
+        rect.anchoredPosition = new Vector2(-72f, -18f);
+        rect.sizeDelta = new Vector2(112f, 48f);
         Button button = image.gameObject.AddComponent<Button>();
-        TextMeshProUGUI label = CreateTmpText("Label", rect, 26, TextAlignmentOptions.Center);
+        label = CreateTmpText("Label", rect, 26, TextAlignmentOptions.Center);
         Stretch(label.rectTransform);
         label.text = "닫기";
         label.raycastTarget = false;
@@ -568,6 +829,16 @@ public static class ChannelZeroVerticalSliceSceneCreator
         };
     }
 
+    private static ChannelZeroCloseupCatalog.ArtworkEntry EraCloseup(
+        string closeupId, ChannelEra era, string path,
+        string stateId = ChannelZeroIds.DefaultVisualState)
+    {
+        ChannelZeroCloseupCatalog.ArtworkEntry entry = Closeup(
+            closeupId, stateId, path);
+        entry.eraYear = (int)era;
+        return entry;
+    }
+
     private static void CreateHotspots(RectTransform parent)
     {
         HotspotSpec[] specs =
@@ -587,10 +858,14 @@ public static class ChannelZeroVerticalSliceSceneCreator
             new("Living_JinwooHand", ChannelZeroIds.LivingRoom, new Rect(0.72f, 0.40f, 0.25f, 0.49f)),
             new("Living_Clock", ChannelZeroIds.LivingRoom, new Rect(0.59f, 0.15f, 0.08f, 0.45f)),
             new("Living_DisplayMedical", ChannelZeroIds.LivingRoom, new Rect(0.66f, 0.24f, 0.10f, 0.36f)),
-            new("Living_Lockbox", ChannelZeroIds.LivingRoom, new Rect(0.22f, 0.58f, 0.33f, 0.30f)),
-            new("Living_TubeCase", ChannelZeroIds.LivingRoom, new Rect(0.60f, 0.77f, 0.18f, 0.21f)),
-            new("Living_REC", ChannelZeroIds.LivingRoom, new Rect(0.43f, 0.58f, 0.14f, 0.08f), ChannelEra.Year2001),
-            new("Living_Mina", ChannelZeroIds.LivingRoom, new Rect(0.45f, 0.40f, 0.10f, 0.16f),
+            new("Living_Vase", ChannelZeroIds.LivingRoom, new Rect(0.22f, 0.58f, 0.33f, 0.30f)),
+            new("Living_Lockbox", ChannelZeroIds.LivingRoom, new Rect(0.38f, 0.61f, 0.12f, 0.11f)),
+            new("Living_Toolbox", ChannelZeroIds.LivingRoom, new Rect(0.60f, 0.77f, 0.18f, 0.21f), ChannelEra.Year2001),
+            new("Living_ReturnCircuit", ChannelZeroIds.LivingRoom, new Rect(0.43f, 0.58f, 0.14f, 0.08f)),
+            new("Living_REC", ChannelZeroIds.LivingRoom, new Rect(0.51f, 0.60f, 0.10f, 0.10f)),
+            new("Living_Mina", ChannelZeroIds.LivingRoom, new Rect(0.445f, 0.43f, 0.11f, 0.14f),
+                ChannelEra.Year2001),
+            new("Living_Child", ChannelZeroIds.LivingRoom, new Rect(0.45f, 0.40f, 0.10f, 0.16f),
                 ChannelEra.Year1961, ChannelEra.Year1981, ChannelEra.Year2021),
             new(ChannelZeroIds.LivingWorkshopDoor, ChannelZeroIds.LivingRoom, new Rect(0.77f, 0.08f, 0.17f, 0.49f)),
 
@@ -633,20 +908,6 @@ public static class ChannelZeroVerticalSliceSceneCreator
         };
         for (int i = 0; i < buttons.Length; i++)
             CreateButton(parent, "Era_" + buttons[i].label, buttons[i].label, 20f + i * 112f, -18f, 100f, 44f, buttons[i].action);
-    }
-
-    private static void CreateOperationButtons(RectTransform parent, ChannelZeroVerticalSliceController controller)
-    {
-        (string label, UnityEngine.Events.UnityAction action)[] buttons =
-        {
-            ("REC", controller.SelectRec),
-            ("PLAY", controller.SelectPlay),
-            ("LOAD", controller.SelectLoad),
-            ("REW", controller.SelectRew),
-            ("HOLD", controller.SelectHold),
-        };
-        for (int i = 0; i < buttons.Length; i++)
-            CreateButton(parent, "Operation_" + buttons[i].label, buttons[i].label, 1360f + i * 108f, -18f, 96f, 44f, buttons[i].action);
     }
 
     private static Button CreateBackButton(RectTransform parent, ChannelZeroVerticalSliceController controller)
@@ -769,6 +1030,8 @@ public static class ChannelZeroVerticalSliceSceneCreator
     {
         RectTransform rect = CreateRect(name, parent);
         TextMeshProUGUI text = rect.gameObject.AddComponent<TextMeshProUGUI>();
+        if (koreanUiFont != null)
+            text.font = koreanUiFont;
         text.fontSize = fontSize;
         text.alignment = alignment;
         text.color = Color.white;
@@ -788,11 +1051,8 @@ public static class ChannelZeroVerticalSliceSceneCreator
     private static void RegisterSceneInBuildSettings()
     {
         List<EditorBuildSettingsScene> scenes = new(EditorBuildSettings.scenes);
-        int index = scenes.FindIndex(item => item.path == ScenePath);
-        if (index < 0)
-            scenes.Add(new EditorBuildSettingsScene(ScenePath, true));
-        else
-            scenes[index] = new EditorBuildSettingsScene(ScenePath, true);
+        scenes.RemoveAll(item => item.path == ScenePath);
+        scenes.Insert(0, new EditorBuildSettingsScene(ScenePath, true));
         EditorBuildSettings.scenes = scenes.ToArray();
     }
 
@@ -805,6 +1065,8 @@ public static class ChannelZeroVerticalSliceSceneCreator
         int hudOverlays = 0;
         int inventorySlots = 0;
         int hudDials = 0;
+        int monitorMasks = 0;
+        int invalidTmpFonts = 0;
         HashSet<string> logicalIds = new(StringComparer.Ordinal);
 
         foreach (GameObject root in scene.GetRootGameObjects())
@@ -842,12 +1104,18 @@ public static class ChannelZeroVerticalSliceSceneCreator
             colliders += root.GetComponentsInChildren<Collider>(true).Length;
             colliders += root.GetComponentsInChildren<Collider2D>(true).Length;
             closeupCanvases += root.GetComponentsInChildren<ChannelZeroCloseupCanvasController>(true).Length;
+            foreach (RectMask2D mask in root.GetComponentsInChildren<RectMask2D>(true))
+                if (mask.gameObject.name == "MonitorViewport")
+                    monitorMasks++;
+            foreach (TMP_Text text in root.GetComponentsInChildren<TMP_Text>(true))
+                if (text.font == null || !text.font.name.StartsWith("NotoSansKR", StringComparison.Ordinal))
+                    invalidTmpFonts++;
         }
 
         if (backgrounds != 1)
             throw new InvalidOperationException($"Expected one RoomBackground, found {backgrounds}.");
-        if (hotspots != 29 || logicalIds.Count != 29)
-            throw new InvalidOperationException($"Expected 29 unique hotspots, found {hotspots}/{logicalIds.Count}.");
+        if (hotspots != 32 || logicalIds.Count != 32)
+            throw new InvalidOperationException($"Expected 32 unique hotspots, found {hotspots}/{logicalIds.Count}.");
         if (colliders != 0)
             throw new InvalidOperationException($"Physics colliders are forbidden on this UI slice. Found {colliders}.");
         if (closeupCanvases != 1)
@@ -855,9 +1123,16 @@ public static class ChannelZeroVerticalSliceSceneCreator
         if (hudOverlays != 1 || inventorySlots != 7 || hudDials != 1)
             throw new InvalidOperationException(
                 $"Invalid CRT HUD structure overlays={hudOverlays} slots={inventorySlots} dials={hudDials}.");
+        if (monitorMasks != 1 || invalidTmpFonts != 0)
+            throw new InvalidOperationException(
+                $"Invalid closeup typography/mask masks={monitorMasks} invalidTmpFonts={invalidTmpFonts}.");
+        RectTransform closeupRoot = FindSceneComponent<RectTransform>(scene, "CloseupCanvas");
+        RectTransform crtHud = FindSceneComponent<RectTransform>(scene, "CrtHud");
+        if (closeupRoot == null || crtHud == null || crtHud.GetSiblingIndex() <= closeupRoot.GetSiblingIndex())
+            throw new InvalidOperationException("CRT chrome must render above the closeup screen.");
         if (scene.GetRootGameObjects()[0].scene.GetRootGameObjects().Length == 0)
             throw new InvalidOperationException("Scene has no root objects.");
 
-        Debug.Log($"CHANNEL_ZERO_VERTICAL_SLICE_VALIDATED backgrounds={backgrounds} hotspots={hotspots} colliders={colliders} closeups={closeupCanvases} hud={hudOverlays} slots={inventorySlots} dials={hudDials}");
+        Debug.Log($"CHANNEL_ZERO_VERTICAL_SLICE_VALIDATED backgrounds={backgrounds} hotspots={hotspots} colliders={colliders} closeups={closeupCanvases} hud={hudOverlays} slots={inventorySlots} dials={hudDials} masks={monitorMasks} tmpFonts=ok");
     }
 }

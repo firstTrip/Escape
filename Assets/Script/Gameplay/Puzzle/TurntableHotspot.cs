@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class TurntableHotspot : InteractableHotspot
+public class TurntableHotspot : InteractableHotspot, IPuzzle
 {
     [SerializeField] private InventoryItemSO recordItem;
     [SerializeField] private AudioSource musicSource;
@@ -17,7 +17,7 @@ public class TurntableHotspot : InteractableHotspot
         var inv = InventoryManager.Instance;
         if (inv == null || !inv.Has(recordItem))
         {
-            SubtitleUI.Instance?.ShowLine(needRecordLine);
+            SubtitleUI.Instance?.ShowFeedback(needRecordLine);
             return;
         }
 
@@ -27,7 +27,7 @@ public class TurntableHotspot : InteractableHotspot
             musicSource.clip = motifClip;
             musicSource.Play();
         }
-        SubtitleUI.Instance?.ShowLine(playingLine);
+        SubtitleUI.Instance?.ShowFeedback(playingLine);
 
         if (!IsSolved)
         {

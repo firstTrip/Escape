@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "layouts": [
+    { "interactionId": "Living_CRT", "era": 0, "x": 0.40, "y": 0.40, "width": 0.20, "height": 0.23 },
+    { "interactionId": "Living_CRTRear", "era": 2001, "x": 0.40, "y": 0.40, "width": 0.20, "height": 0.23 },
+    { "interactionId": "Living_NumberRug", "era": 0, "x": 0.10, "y": 0.66, "width": 0.62, "height": 0.29 },
+    { "interactionId": "Living_JinwooHand", "era": 0, "x": 0.72, "y": 0.46, "width": 0.24, "height": 0.44 },
+    { "interactionId": "Living_Armchair", "era": 0, "x": 0.72, "y": 0.46, "width": 0.24, "height": 0.44 },
+    { "interactionId": "Living_Clock", "era": 0, "x": 0.59, "y": 0.14, "width": 0.08, "height": 0.49 },
+    { "interactionId": "Living_DisplayMedical", "era": 0, "x": 0.66, "y": 0.24, "width": 0.10, "height": 0.36 },
+    { "interactionId": "Living_DisplayMedical", "era": 1981, "x": 0.66, "y": 0.24, "width": 0.10, "height": 0.36, "enabled": false },
+    { "interactionId": "Living_DisplayMedical", "era": 2001, "x": 0.66, "y": 0.24, "width": 0.10, "height": 0.36, "enabled": false },
+    { "interactionId": "Living_DisplayMedical", "era": 2021, "x": 0.66, "y": 0.24, "width": 0.10, "height": 0.36, "enabled": false },
+    { "interactionId": "Living_Mina", "era": 0, "x": 0.445, "y": 0.43, "width": 0.11, "height": 0.14 },
+    { "interactionId": "Living_Child", "era": 0, "x": 0.445, "y": 0.43, "width": 0.11, "height": 0.14 },
+    { "interactionId": "Living_WorkshopDoor", "era": 0, "x": 0.77, "y": 0.08, "width": 0.17, "height": 0.49 },
+
+    { "interactionId": "Living_Photos", "era": 1961, "x": 0.45, "y": 0.34, "width": 0.13, "height": 0.11 },
+    { "interactionId": "Living_Photos", "era": 1981, "x": 0.40, "y": 0.12, "width": 0.36, "height": 0.36 },
+    { "interactionId": "Living_Photos", "era": 2001, "x": 0.45, "y": 0.34, "width": 0.14, "height": 0.11 },
+    { "interactionId": "Living_Photos", "era": 2021, "x": 0.64, "y": 0.20, "width": 0.12, "height": 0.36 },
+
+    { "interactionId": "Living_Lockbox", "era": 1961, "x": 0.29, "y": 0.63, "width": 0.20, "height": 0.11 },
+    { "interactionId": "Living_Lockbox", "era": 1981, "x": 0.38, "y": 0.61, "width": 0.12, "height": 0.10 },
+    { "interactionId": "Living_Lockbox", "era": 2001, "x": 0.38, "y": 0.61, "width": 0.12, "height": 0.11 },
+    { "interactionId": "Living_Lockbox", "era": 2021, "x": 0.37, "y": 0.59, "width": 0.13, "height": 0.13 },
+    { "interactionId": "Living_Vase", "era": 1961, "x": 0.29, "y": 0.63, "width": 0.20, "height": 0.11 },
+    { "interactionId": "Living_Vase", "era": 1981, "x": 0.38, "y": 0.61, "width": 0.12, "height": 0.10 },
+    { "interactionId": "Living_Vase", "era": 2001, "x": 0.38, "y": 0.61, "width": 0.12, "height": 0.11 },
+    { "interactionId": "Living_Vase", "era": 2021, "x": 0.37, "y": 0.59, "width": 0.13, "height": 0.13 },
+
+    { "interactionId": "Living_REC", "era": 1961, "x": 0.51, "y": 0.61, "width": 0.11, "height": 0.10 },
+    { "interactionId": "Living_REC", "era": 1981, "x": 0.51, "y": 0.60, "width": 0.10, "height": 0.10 },
+    { "interactionId": "Living_REC", "era": 2001, "x": 0.51, "y": 0.60, "width": 0.10, "height": 0.10 },
+    { "interactionId": "Living_REC", "era": 2021, "x": 0.51, "y": 0.59, "width": 0.11, "height": 0.11 },
+    { "interactionId": "Living_ReturnCircuit", "era": 1961, "x": 0.51, "y": 0.61, "width": 0.11, "height": 0.10 },
+    { "interactionId": "Living_ReturnCircuit", "era": 1981, "x": 0.51, "y": 0.60, "width": 0.10, "height": 0.10, "enabled": false },
+    { "interactionId": "Living_ReturnCircuit", "era": 2001, "x": 0.51, "y": 0.60, "width": 0.10, "height": 0.10, "enabled": false },
+    { "interactionId": "Living_ReturnCircuit", "era": 2021, "x": 0.51, "y": 0.59, "width": 0.11, "height": 0.11, "enabled": false },
+
+    { "interactionId": "Living_TubeCase", "era": 1961, "x": 0.61, "y": 0.82, "width": 0.16, "height": 0.17, "enabled": false },
+    { "interactionId": "Living_TubeCase", "era": 1981, "x": 0.60, "y": 0.61, "width": 0.18, "height": 0.17, "enabled": false },
+    { "interactionId": "Living_TubeCase", "era": 2001, "x": 0.60, "y": 0.61, "width": 0.18, "height": 0.17 },
+    { "interactionId": "Living_TubeCase", "era": 2021, "x": 0.60, "y": 0.61, "width": 0.18, "height": 0.17, "enabled": false },
+
+    { "interactionId": "Living_Toolbox", "era": 1961, "x": 0.60, "y": 0.77, "width": 0.18, "height": 0.21, "enabled": false },
+    { "interactionId": "Living_Toolbox", "era": 1981, "x": 0.60, "y": 0.77, "width": 0.18, "height": 0.21, "enabled": false },
+    { "interactionId": "Living_Toolbox", "era": 2001, "x": 0.60, "y": 0.61, "width": 0.18, "height": 0.17 },
+    { "interactionId": "Living_Toolbox", "era": 2021, "x": 0.60, "y": 0.77, "width": 0.18, "height": 0.21, "enabled": false },
+
+    { "interactionId": "Workshop_Workbench", "era": 0, "x": 0.18, "y": 0.32, "width": 0.43, "height": 0.35 },
+    { "interactionId": "Workshop_PartsDrawer", "era": 0, "x": 0.13, "y": 0.10, "width": 0.10, "height": 0.36 },
+    { "interactionId": "Workshop_ToolBoard", "era": 0, "x": 0.28, "y": 0.06, "width": 0.29, "height": 0.34 },
+    { "interactionId": "Workshop_TubeTester", "era": 0, "x": 0.50, "y": 0.23, "width": 0.10, "height": 0.25 },
+    { "interactionId": "Workshop_Soldering", "era": 0, "x": 0.20, "y": 0.35, "width": 0.17, "height": 0.18 },
+    { "interactionId": "Workshop_KeyCutter", "era": 0, "x": 0.59, "y": 0.31, "width": 0.13, "height": 0.25 },
+    { "interactionId": "Workshop_LivingDoor", "era": 0, "x": 0.88, "y": 0.05, "width": 0.11, "height": 0.70 },
+
+    { "interactionId": "Workshop_RepairLog", "era": 1961, "x": 0.69, "y": 0.14, "width": 0.13, "height": 0.38 },
+    { "interactionId": "Workshop_RepairLog", "era": 1981, "x": 0.69, "y": 0.14, "width": 0.13, "height": 0.38 },
+    { "interactionId": "Workshop_RepairLog", "era": 2001, "x": 0.69, "y": 0.14, "width": 0.13, "height": 0.38 },
+    { "interactionId": "Workshop_RepairLog", "era": 2021, "x": 0.69, "y": 0.14, "width": 0.13, "height": 0.38 },
+
+    { "interactionId": "Workshop_FloorPlan", "era": 1961, "x": 0.31, "y": 0.39, "width": 0.13, "height": 0.10 },
+    { "interactionId": "Workshop_FloorPlan", "era": 1981, "x": 0.45, "y": 0.39, "width": 0.08, "height": 0.09 },
+    { "interactionId": "Workshop_FloorPlan", "era": 2001, "x": 0.33, "y": 0.38, "width": 0.11, "height": 0.11 },
+    { "interactionId": "Workshop_FloorPlan", "era": 2021, "x": 0.36, "y": 0.39, "width": 0.09, "height": 0.10 },
+
+    { "interactionId": "Workshop_FoldingCrank", "era": 1961, "x": 0.44, "y": 0.40, "width": 0.08, "height": 0.08 },
+    { "interactionId": "Workshop_FoldingCrank", "era": 1981, "x": 0.44, "y": 0.40, "width": 0.08, "height": 0.08, "enabled": false },
+    { "interactionId": "Workshop_FoldingCrank", "era": 2001, "x": 0.44, "y": 0.40, "width": 0.08, "height": 0.08, "enabled": false },
+    { "interactionId": "Workshop_FoldingCrank", "era": 2021, "x": 0.44, "y": 0.40, "width": 0.08, "height": 0.08, "enabled": false }
+  ]
+}

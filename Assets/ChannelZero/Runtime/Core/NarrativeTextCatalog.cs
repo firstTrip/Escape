@@ -39,6 +39,40 @@ namespace ChannelZero.Runtime.Core
             return new NarrativeTextCatalog(file);
         }
 
+        public static NarrativeTextCatalog Combine(NarrativeTextCatalog preferred,
+            NarrativeTextCatalog fallback, Func<NarrativeTextEntry, bool> includeFallback)
+        {
+            if (preferred == null) throw new ArgumentNullException(nameof(preferred));
+            NarrativeTextFile file = new() { schemaVersion = 1, locale = preferred.Locale };
+            file.entries.AddRange(preferred.entries);
+            HashSet<string> ids = new(preferred.entries.ConvertAll(entry => entry.id), StringComparer.Ordinal);
+            if (fallback != null)
+                foreach (NarrativeTextEntry entry in fallback.entries)
+                    if ((includeFallback?.Invoke(entry) ?? true) && ids.Add(entry.id)) file.entries.Add(entry);
+            return new NarrativeTextCatalog(file);
+        }
+
+        public static NarrativeTextCatalog LoadDefault()
+        {
+            return Load("ko-KR");
+        }
+
+        public static NarrativeTextCatalog Load(string localeCode)
+        {
+            string requested = string.IsNullOrWhiteSpace(localeCode) ? "ko-KR" : localeCode;
+            TextAsset legacyAsset = Resources.Load<TextAsset>($"ChannelZero/Data/narrative_{requested}.v1");
+            TextAsset chapterOneAsset = Resources.Load<TextAsset>($"ChannelZero/Data/narrative_chapter1_v2_{requested}");
+            if ((legacyAsset == null || chapterOneAsset == null) && requested != "ko-KR")
+            {
+                legacyAsset = Resources.Load<TextAsset>("ChannelZero/Data/narrative_ko-KR.v1");
+                chapterOneAsset = Resources.Load<TextAsset>("ChannelZero/Data/narrative_chapter1_v2_ko-KR");
+            }
+            if (legacyAsset == null || chapterOneAsset == null)
+                throw new InvalidOperationException("Narrative definition resource is missing.");
+            return Combine(FromJson(chapterOneAsset.text), FromJson(legacyAsset.text),
+                entry => !string.Equals(entry.chapter, "CH1", StringComparison.OrdinalIgnoreCase));
+        }
+
         public bool TryGetById(string id, out NarrativeTextEntry entry) => byId.TryGetValue(id, out entry);
     }
 }

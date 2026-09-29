@@ -12,19 +12,39 @@ namespace ChannelZero.Runtime.Core
         {
             public string closeupId;
             public string stateId = ChannelZeroIds.DefaultVisualState;
+            [Tooltip("0이면 모든 연도에서 사용하는 기본 이미지입니다.")]
+            public int eraYear;
             public Sprite artwork;
         }
 
         [SerializeField] private List<ArtworkEntry> artworks = new();
+        public IReadOnlyList<ArtworkEntry> Artworks => artworks;
 
         public bool TryGetArtwork(string closeupId, string stateId, out Sprite artwork)
+        {
+            return TryGetArtwork(closeupId, stateId, null, out artwork);
+        }
+
+        public bool TryGetArtwork(string closeupId, string stateId, ChannelEra era, out Sprite artwork)
+        {
+            return TryGetArtwork(closeupId, stateId, (int)era, out artwork);
+        }
+
+        private bool TryGetArtwork(string closeupId, string stateId, int? eraYear, out Sprite artwork)
         {
             string requestedState = string.IsNullOrWhiteSpace(stateId)
                 ? ChannelZeroIds.DefaultVisualState
                 : stateId;
-            ArtworkEntry exact = artworks.Find(entry =>
-                entry.closeupId == closeupId && entry.stateId == requestedState);
-            artwork = exact?.artwork;
+
+            ArtworkEntry exact = eraYear.HasValue
+                ? artworks.Find(entry => entry.closeupId == closeupId
+                    && entry.stateId == requestedState
+                    && entry.eraYear == eraYear.Value)
+                : null;
+            ArtworkEntry fallback = artworks.Find(entry => entry.closeupId == closeupId
+                && entry.stateId == requestedState
+                && entry.eraYear == 0);
+            artwork = (exact ?? fallback)?.artwork;
             return artwork != null;
         }
 

@@ -8,12 +8,25 @@ namespace ChannelZero.Runtime.Core
     {
         public string puzzleId;
         public string stateId;
+        public StatePersistence persistence;
+        public string roomId;
+        public ChannelEra era;
+        public bool eraScoped;
 
-        public PuzzleStateEntry(string puzzleId, string stateId)
+        public PuzzleStateEntry(string puzzleId, string stateId,
+            StatePersistence persistence = StatePersistence.Physical,
+            string roomId = "", ChannelEra era = ChannelEra.Year2001, bool eraScoped = false)
         {
             this.puzzleId = puzzleId;
             this.stateId = stateId;
+            this.persistence = persistence;
+            this.roomId = roomId ?? string.Empty;
+            this.era = era;
+            this.eraScoped = eraScoped;
         }
+
+        public PuzzleStateEntry Clone() =>
+            new(puzzleId, stateId, persistence, roomId, era, eraScoped);
     }
 
     [Serializable]
@@ -34,9 +47,22 @@ namespace ChannelZero.Runtime.Core
     }
 
     [Serializable]
+    public sealed class InventoryOriginEntry
+    {
+        public string itemId;
+        public string roomId;
+
+        public InventoryOriginEntry(string itemId, string roomId)
+        {
+            this.itemId = itemId;
+            this.roomId = roomId;
+        }
+    }
+
+    [Serializable]
     public sealed class ChannelZeroSessionState
     {
-        public const int CurrentSaveVersion = 1;
+        public const int CurrentSaveVersion = 4;
 
         public int saveVersion = CurrentSaveVersion;
         public StoryChapter chapter = StoryChapter.Prologue;
@@ -46,6 +72,7 @@ namespace ChannelZero.Runtime.Core
         public ChannelOperation operation = ChannelOperation.None;
         public DisappearingStairState disappearingStairState = DisappearingStairState.Hidden;
         public string heldItemId = string.Empty;
+        public string selectedInventoryItemId = string.Empty;
         public string activeCloseupId = string.Empty;
         public string activeCloseupStateId = ChannelZeroIds.DefaultVisualState;
         public string closeupOriginRoomId = string.Empty;
@@ -57,8 +84,10 @@ namespace ChannelZero.Runtime.Core
         public List<string> recordIds = new();
         public List<string> seenTextIds = new();
         public List<string> inventoryItemIds = new();
+        public List<InventoryOriginEntry> inventoryOrigins = new();
         public List<PuzzleStateEntry> puzzleStates = new();
         public List<RoomHistoryEntry> roomHistory = new();
+        public List<TimelineSnapshot> timelineSnapshots = new();
 
         public bool CanGoBack => roomHistory != null && roomHistory.Count > 0;
 
@@ -124,12 +153,45 @@ namespace ChannelZero.Runtime.Core
 
         public void AddItem(string itemId)
         {
+            bool alreadyOwned = HasItem(itemId);
             AddUnique(inventoryItemIds, itemId);
+            inventoryOrigins ??= new List<InventoryOriginEntry>();
+            if (!alreadyOwned && !string.IsNullOrWhiteSpace(itemId) &&
+                inventoryOrigins.Find(entry => entry.itemId == itemId) == null)
+                inventoryOrigins.Add(new InventoryOriginEntry(itemId, roomId));
         }
 
         public bool HasItem(string itemId)
         {
             return !string.IsNullOrWhiteSpace(itemId) && inventoryItemIds.Contains(itemId);
+        }
+
+        public bool RemoveItem(string itemId)
+        {
+            if (string.IsNullOrWhiteSpace(itemId) || !inventoryItemIds.Remove(itemId))
+                return false;
+            if (selectedInventoryItemId == itemId)
+                selectedInventoryItemId = string.Empty;
+            if (heldItemId == itemId)
+                heldItemId = string.Empty;
+            inventoryOrigins?.RemoveAll(entry => entry.itemId == itemId);
+            return true;
+        }
+
+        public string GetItemOriginRoom(string itemId)
+        {
+            return inventoryOrigins?.Find(entry => entry.itemId == itemId)?.roomId ?? string.Empty;
+        }
+
+        public void SetFlag(string flagId, bool value = true)
+        {
+            SetPuzzleState("flag:" + flagId, value.ToString().ToLowerInvariant());
+        }
+
+        public bool GetFlag(string flagId)
+        {
+            return string.Equals(GetPuzzleState("flag:" + flagId, "false"), "true",
+                StringComparison.OrdinalIgnoreCase);
         }
 
         public bool TryHold(string itemId)
@@ -144,14 +206,29 @@ namespace ChannelZero.Runtime.Core
 
         public void SetPuzzleState(string puzzleId, string stateId)
         {
+            StateDescriptor descriptor = ChannelZeroStateCatalog.Resolve(puzzleId, roomId);
+            SetPuzzleState(puzzleId, stateId, descriptor.Persistence, descriptor.RoomId,
+                descriptor.EraScoped);
+        }
+
+        public void SetPuzzleState(string puzzleId, string stateId, StatePersistence persistence,
+            string scopeRoomId = "", bool eraScoped = false, ChannelEra? scopeEra = null)
+        {
             if (string.IsNullOrWhiteSpace(puzzleId))
                 return;
 
             PuzzleStateEntry entry = puzzleStates.Find(item => item.puzzleId == puzzleId);
             if (entry == null)
-                puzzleStates.Add(new PuzzleStateEntry(puzzleId, stateId));
+                puzzleStates.Add(new PuzzleStateEntry(puzzleId, stateId, persistence,
+                    scopeRoomId, scopeEra ?? era, eraScoped));
             else
+            {
                 entry.stateId = stateId;
+                entry.persistence = persistence;
+                entry.roomId = scopeRoomId ?? string.Empty;
+                entry.era = scopeEra ?? era;
+                entry.eraScoped = eraScoped;
+            }
         }
 
         public void EnterCloseup(string closeupId, string stateId = ChannelZeroIds.DefaultVisualState)
@@ -212,11 +289,33 @@ namespace ChannelZero.Runtime.Core
 
         public void RewindPhysicalState(IEnumerable<PuzzleStateEntry> checkpointPuzzleStates)
         {
-            puzzleStates = checkpointPuzzleStates == null
-                ? new List<PuzzleStateEntry>()
-                : new List<PuzzleStateEntry>(checkpointPuzzleStates);
+            puzzleStates.RemoveAll(entry => entry.persistence == StatePersistence.Physical &&
+                (string.IsNullOrWhiteSpace(entry.roomId) || entry.roomId == roomId));
+            if (checkpointPuzzleStates != null)
+            {
+                foreach (PuzzleStateEntry source in checkpointPuzzleStates)
+                {
+                    PuzzleStateEntry entry = source.Clone();
+                    entry.persistence = StatePersistence.Physical;
+                    if (string.IsNullOrWhiteSpace(entry.roomId))
+                        entry.roomId = roomId;
+                    SetPuzzleState(entry.puzzleId, entry.stateId, entry.persistence,
+                        entry.roomId, entry.eraScoped, entry.era);
+                }
+            }
             roomVisualStateId = ChannelZeroIds.DefaultVisualState;
             operation = ChannelOperation.Rew;
+        }
+
+        public void ClearTransientInteraction()
+        {
+            activeCloseupId = string.Empty;
+            activeCloseupStateId = ChannelZeroIds.DefaultVisualState;
+            closeupOriginRoomId = string.Empty;
+            closeupOriginVisualStateId = ChannelZeroIds.DefaultVisualState;
+            closeupInputLocked = false;
+            selectedInventoryItemId = string.Empty;
+            puzzleStates?.RemoveAll(entry => entry.persistence == StatePersistence.Transient);
         }
 
         public string GetPuzzleState(string puzzleId, string fallback = "locked")
@@ -255,14 +354,19 @@ namespace ChannelZero.Runtime.Core
             recordIds ??= new List<string>();
             seenTextIds ??= new List<string>();
             inventoryItemIds ??= new List<string>();
+            inventoryOrigins ??= new List<InventoryOriginEntry>();
             puzzleStates ??= new List<PuzzleStateEntry>();
             roomHistory ??= new List<RoomHistoryEntry>();
+            timelineSnapshots ??= new List<TimelineSnapshot>();
+            operation = ChannelOperation.None;
+            ClearTransientInteraction();
+            if (!string.IsNullOrWhiteSpace(selectedInventoryItemId) && !HasItem(selectedInventoryItemId))
+                selectedInventoryItemId = string.Empty;
             roomId = string.IsNullOrWhiteSpace(roomId) ? ChannelZeroIds.EntryRoom : roomId;
             roomVisualStateId = string.IsNullOrWhiteSpace(roomVisualStateId)
                 ? ChannelZeroIds.DefaultVisualState
                 : roomVisualStateId;
             MarkVisited(roomId);
-            saveVersion = CurrentSaveVersion;
         }
 
         private void MarkVisited(string value)

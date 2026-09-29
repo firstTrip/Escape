@@ -7,6 +7,6 @@ public class ExamineHotspot : InteractableHotspot
 
     protected override void OnInteract()
     {
-        ExaminePanelUI.Instance?.Show(examineSprite, examineText);
+        ExaminePanelUI.Instance?.ShowDocument(examineSprite, examineText);
     }
 }
