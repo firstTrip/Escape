@@ -1,67 +1,32 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class CursorController : MonoBehaviour
 {
-    [Header("Camera")]
-    [SerializeField] private Camera mainCamera;
+    public static CursorController Instance { get; private set; }
 
-    [Header("Raycast")]
-    [SerializeField] private LayerMask rayerMask;
-    [SerializeField] private float rayDistance = 100f;
-
-    private IInteractable curInteractable;
-    private IHoverable curHoverable;
-    private Collider currentCollider;
+    [SerializeField] private Sprite defaultCursor;
+    [SerializeField] private Sprite hoverCursor;
+    [SerializeField] private Vector2 hotspot = Vector2.zero;
 
     private void Awake()
     {
-        if (mainCamera == null)
-            mainCamera = Camera.main;
-    }
-
-    private void Update()
-    {
-        DetectInteractable();
-
-        if (Input.GetMouseButtonDown(0))
-            TryInterative();
-    }
-
-    private void DetectInteractable()
-    {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit , rayDistance, rayerMask))
+        if (Instance != null && Instance != this)
         {
-            if (currentCollider == hit.collider)
-                return;
-
-            ClearCurrentTarget();
-
-            currentCollider = hit.collider;
-
-            hit.collider.TryGetComponent(out curInteractable);
-            hit.collider.TryGetComponent(out curHoverable);
-
-            curHoverable?.OnHoverEnter();
+            Destroy(gameObject);
             return;
         }
-
-        ClearCurrentTarget();
+        Instance = this;
     }
 
-    private void ClearCurrentTarget()
+    private void Start()
     {
-        curHoverable?.OnHoverExit();
-
-        currentCollider = null;
-        curInteractable = null;
-        curHoverable = null;
+        SetHover(false);
     }
 
-    private void TryInterative()
+    public void SetHover(bool hovering)
     {
-        curInteractable?.Interact();
+        Sprite sprite = hovering ? hoverCursor : defaultCursor;
+        if (sprite == null || sprite.texture == null) return;
+        Cursor.SetCursor(sprite.texture, hotspot, CursorMode.Auto);
     }
 }

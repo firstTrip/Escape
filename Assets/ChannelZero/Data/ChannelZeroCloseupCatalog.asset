@@ -1,0 +1,169 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51e34080516c2ae4ca917dd80aae78c3, type: 3}
+  m_Name: ChannelZeroCloseupCatalog
+  m_EditorClassIdentifier: ChannelZero.Runtime::ChannelZero.Runtime.Core.ChannelZeroCloseupCatalog
+  artworks:
+  - closeupId: LIV-Z00
+    stateId: default
+    eraYear: 2001
+    artwork: {fileID: 21300000, guid: 07805d3edba7406f9bfd3b26bf4951e8, type: 3}
+  - closeupId: LIV-Z00
+    stateId: acquired
+    eraYear: 2001
+    artwork: {fileID: 21300000, guid: 3221232645ac4f61abe706ddd6971664, type: 3}
+  - closeupId: PRO-Z01
+    stateId: default
+    artwork: {fileID: 21300000, guid: 5b64410f65a63f347b12f1310b0110b1, type: 3}
+  - closeupId: LIV-Z01
+    stateId: default
+    artwork: {fileID: 21300000, guid: d9d099299bf6dd4449098761ca97cfb9, type: 3}
+  - closeupId: LIV-Z02
+    stateId: default
+    artwork: {fileID: 21300000, guid: 4fb858684d2e92e4d8b54dfcbe17d0c5, type: 3}
+  - closeupId: LIV-Z02
+    stateId: open
+    artwork: {fileID: 21300000, guid: 739429176de45544cbce0edd019cf0f0, type: 3}
+  - closeupId: LIV-Z02
+    stateId: tube_removed
+    artwork: {fileID: 21300000, guid: 8e14c4b8cae39954b9b5fc5e140caa11, type: 3}
+  - closeupId: LIV-Z02
+    stateId: replaced
+    artwork: {fileID: 21300000, guid: 4465ddd284e630f448bdcb7179241735, type: 3}
+  - closeupId: LIV-Z02
+    stateId: bracket_removed
+    artwork: {fileID: 21300000, guid: 53b96506bd4ff3d4997ad7b9df08e25d, type: 3}
+  - closeupId: LIV-Z03
+    stateId: default
+    artwork: {fileID: 21300000, guid: b1c267560ce2af74d8f1d3c21ba4d139, type: 3}
+  - closeupId: LIV-Z03
+    stateId: open
+    artwork: {fileID: 21300000, guid: 004db25f8349498468c7dd96b9962784, type: 3}
+  - closeupId: LIV-Z03
+    stateId: acquired
+    artwork: {fileID: 21300000, guid: f7b71d6882cd5064dbda1cce987c989a, type: 3}
+  - closeupId: LIV-Z04
+    stateId: default
+    artwork: {fileID: 21300000, guid: a127a69529d6b3e45925b32bebff5c0e, type: 3}
+  - closeupId: LIV-Z05
+    stateId: default
+    artwork: {fileID: 21300000, guid: 407756ae30c0b114fb8e75a5b7b2b6f9, type: 3}
+  - closeupId: LIV-Z06
+    stateId: default
+    artwork: {fileID: 21300000, guid: 68b9d18cebb6442449c8e728f82dcc74, type: 3}
+  - closeupId: LIV-Z07
+    stateId: default
+    artwork: {fileID: 21300000, guid: 55791a2192240154cbaf0ed9485b4947, type: 3}
+  - closeupId: LIV-Z08
+    stateId: default
+    artwork: {fileID: 21300000, guid: f6993c7530df2e9439fe1f4aa85894c4, type: 3}
+  - closeupId: LIV-Z09
+    stateId: default
+    artwork: {fileID: 21300000, guid: e78e9eac93dc1024f9e25a9cee2413b4, type: 3}
+  - closeupId: LIV-Z10
+    stateId: default
+    artwork: {fileID: 21300000, guid: 184117755403f4e4589420cb79097f94, type: 3}
+  - closeupId: LIV-Z11
+    stateId: default
+    artwork: {fileID: 21300000, guid: cf5210ff858f0a74abde4fc319dc35d5, type: 3}
+  - closeupId: LIV-Z12
+    stateId: default
+    artwork: {fileID: 21300000, guid: ac6ba3d37a06cb24db700729c9f05bac, type: 3}
+  - closeupId: WKS-Z01
+    stateId: default
+    artwork: {fileID: 21300000, guid: 2f4edb8e858c36f43afa17fbc2b71cd7, type: 3}
+  - closeupId: WKS-Z02
+    stateId: default
+    artwork: {fileID: 21300000, guid: 8a6869da724d16b4b8e4c567b6f21672, type: 3}
+  - closeupId: WKS-Z03
+    stateId: default
+    artwork: {fileID: 21300000, guid: 1d894f7a419b2d343a5410d34f5426bc, type: 3}
+  - closeupId: WKS-Z04
+    stateId: default
+    artwork: {fileID: 21300000, guid: 75710e684808e834bb6e38302cee11bb, type: 3}
+  - closeupId: WKS-Z05
+    stateId: default
+    artwork: {fileID: 21300000, guid: 3c5299121ba6aa04687bdf6aad1cfbce, type: 3}
+  - closeupId: WKS-Z06
+    stateId: default
+    artwork: {fileID: 21300000, guid: 79eb933fcc8503e4e822b525cafafc1a, type: 3}
+  - closeupId: WKS-I01
+    stateId: default
+    artwork: {fileID: 21300000, guid: 72da79bdcf9edd244a7213577c020017, type: 3}
+  - closeupId: LIV-Z04
+    stateId: default
+    eraYear: 1961
+    artwork: {fileID: 21300000, guid: bf3e3a028a4641558cd81144b72a112f, type: 3}
+  - closeupId: LIV-Z04
+    stateId: default
+    eraYear: 1981
+    artwork: {fileID: 21300000, guid: 63168cfbd32b44388d466a99a227c795, type: 3}
+  - closeupId: LIV-Z04
+    stateId: default
+    eraYear: 2001
+    artwork: {fileID: 21300000, guid: 4b0863bedd5d4af1b97738a86813b722, type: 3}
+  - closeupId: LIV-Z04
+    stateId: default
+    eraYear: 2021
+    artwork: {fileID: 21300000, guid: 4d86e660144345ce8e72da5492fe210f, type: 3}
+  - closeupId: LIV-Z04
+    stateId: hint9
+    eraYear: 2021
+    artwork: {fileID: 21300000, guid: d20954a596fc1294492e21824c02a8cf, type: 3}
+  - closeupId: LIV-Z10
+    stateId: default
+    eraYear: 1961
+    artwork: {fileID: 21300000, guid: 75dfffaa52e8423e9914f4a59d504342, type: 3}
+  - closeupId: LIV-Z10
+    stateId: default
+    eraYear: 1981
+    artwork: {fileID: 21300000, guid: c363e3473da9476bb16d4a8acc14ef27, type: 3}
+  - closeupId: LIV-Z10
+    stateId: default
+    eraYear: 2001
+    artwork: {fileID: 21300000, guid: 9010d36e2e3b4b3e9defe5fcb6ad3566, type: 3}
+  - closeupId: LIV-Z10
+    stateId: default
+    eraYear: 2021
+    artwork: {fileID: 21300000, guid: f147a32dadf44a21a2be46de3878a9e6, type: 3}
+  - closeupId: LIV-Z12
+    stateId: default
+    eraYear: 1961
+    artwork: {fileID: 21300000, guid: 229d67494ee649db999f57573f461913, type: 3}
+  - closeupId: LIV-Z12
+    stateId: default
+    eraYear: 1981
+    artwork: {fileID: 21300000, guid: 29bb981904034f9d80ce4b813ee7f91f, type: 3}
+  - closeupId: LIV-Z12
+    stateId: default
+    eraYear: 2001
+    artwork: {fileID: 21300000, guid: 69c12bd35b6d4afd83420fba19c24f3f, type: 3}
+  - closeupId: LIV-Z12
+    stateId: default
+    eraYear: 2021
+    artwork: {fileID: 21300000, guid: 8c921fa454114a0182c4d7dca9757640, type: 3}
+  - closeupId: WKS-Z05
+    stateId: default
+    eraYear: 1961
+    artwork: {fileID: 21300000, guid: ed52db3b67534a18bee0637ab618cab4, type: 3}
+  - closeupId: WKS-Z05
+    stateId: default
+    eraYear: 1981
+    artwork: {fileID: 21300000, guid: 272bbb0450874948910c6259f93f88eb, type: 3}
+  - closeupId: WKS-Z05
+    stateId: default
+    eraYear: 2001
+    artwork: {fileID: 21300000, guid: e88db1860f024bc19b282f3a0739c9fd, type: 3}
+  - closeupId: WKS-Z05
+    stateId: default
+    eraYear: 2021
+    artwork: {fileID: 21300000, guid: 57be8082f348409ba104f6132853d7ed, type: 3}

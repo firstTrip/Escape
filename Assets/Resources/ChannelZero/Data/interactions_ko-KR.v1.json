@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "routes": [
+    { "interactionId": "Entry_Mail", "action": "OpenCloseup", "closeupId": "PRO-Z01", "narrativeTarget": "Entry_Mail", "narrativeTrigger": "inspect", "playNarrativeBeforeAction": true, "documentOnly": true },
+    { "interactionId": "Entry_ExteriorDoor", "action": "NoAction", "narrativeTarget": "Entry_ExteriorDoor", "narrativeTrigger": "interact" },
+    { "interactionId": "Entry_CoatRack", "action": "NoAction", "narrativeTarget": "Entry_CoatRack", "narrativeTrigger": "inspect" },
+    { "interactionId": "Entry_ShoeCabinet", "action": "NoAction", "narrativeTarget": "Entry_ShoeCabinet", "narrativeTrigger": "inspect" },
+    { "interactionId": "Entry_UmbrellaStand", "action": "NoAction", "narrativeTarget": "Entry_UmbrellaStand", "narrativeTrigger": "inspect" },
+    { "interactionId": "Entry_WallLamp", "action": "NoAction", "narrativeTarget": "Entry_WallLamp", "narrativeTrigger": "inspect" },
+    { "interactionId": "Entry_WallPhone", "action": "NoAction", "narrativeTarget": "Entry_WallPhone", "narrativeTrigger": "inspect" },
+    { "interactionId": "Entry_LivingDoor", "action": "EnterLivingRoom", "narrativeTarget": "Entry_LivingDoor", "narrativeTrigger": "inspect", "playNarrativeBeforeAction": true },
+    { "interactionId": "Living_WorkshopDoor", "action": "EnterWorkshop", "narrativeTarget": "Living_WorkshopDoor", "narrativeTrigger": "interact" },
+    { "interactionId": "Workshop_LivingDoor", "action": "GoBack" },
+
+    { "interactionId": "Living_CRT", "action": "OpenCloseup", "closeupId": "LIV-Z02", "narrativeTarget": "Living_CRTRear", "operation": "Hold" },
+    { "interactionId": "Living_CRT", "action": "OpenCloseup", "closeupId": "LIV-Z01", "narrativeTarget": "Living_CRT", "narrativeTrigger": "inspect", "playNarrativeBeforeAction": true },
+    { "interactionId": "Living_CRTRear", "action": "OpenCloseup", "closeupId": "LIV-Z02", "narrativeTarget": "Living_CRTRear" },
+    { "interactionId": "Living_Toolbox", "action": "OpenCloseup", "closeupId": "LIV-Z00", "narrativeTarget": "Living_Toolbox", "narrativeTrigger": "inspect", "playNarrativeBeforeAction": true },
+    { "interactionId": "Living_TubeCase", "action": "OpenCloseup", "closeupId": "LIV-Z03", "narrativeTarget": "Living_TubeCase", "narrativeTrigger": "inspect", "playNarrativeBeforeAction": true },
+    { "interactionId": "Living_NumberRug", "action": "OpenCloseup", "closeupId": "LIV-Z04", "narrativeTarget": "Living_NumberRug" },
+    { "interactionId": "Living_DisplayMedical", "action": "OpenCloseup", "closeupId": "LIV-Z05", "narrativeTarget": "Living_DisplayMedical" },
+    { "interactionId": "Living_Armchair", "action": "OpenCloseup", "closeupId": "LIV-Z06", "narrativeTarget": "Living_Armchair", "closeupNarrativeTarget": "Living_JinwooHand", "unlockId": "Living_JinwooHand" },
+    { "interactionId": "Living_JinwooHand", "action": "OpenCloseup", "closeupId": "LIV-Z06", "narrativeTarget": "Living_JinwooHand" },
+    { "interactionId": "Living_Vase", "action": "OpenCloseup", "closeupId": "LIV-Z07", "narrativeTarget": "Living_Vase" },
+    { "interactionId": "Living_Lockbox", "action": "OpenCloseup", "closeupId": "LIV-Z07", "narrativeTarget": "Living_Vase" },
+    { "interactionId": "Living_ReturnCircuit", "action": "OpenCloseup", "closeupId": "LIV-Z08", "narrativeTarget": "Living_ReturnCircuit", "unlockId": "Living_ReturnCircuit" },
+    { "interactionId": "Living_REC", "action": "OpenCloseup", "closeupId": "LIV-Z08", "narrativeTarget": "Living_ReturnCircuit", "unlockId": "Living_ReturnCircuit" },
+    { "interactionId": "Living_Child", "action": "PlayNarrative", "narrativeTarget": "Living_Child", "narrativeTrigger": "inspect" },
+    { "interactionId": "Living_Mina", "action": "PlayNarrative", "narrativeTarget": "Living_Child", "narrativeTrigger": "inspect" },
+    { "interactionId": "Living_Photos", "action": "OpenCloseup", "closeupId": "LIV-Z10", "narrativeTarget": "Living_Photos" },
+    { "interactionId": "Living_Clock", "action": "OpenCloseup", "closeupId": "LIV-Z12", "narrativeTarget": "Living_Clock" },
+
+    { "interactionId": "Workshop_TubeTester", "action": "OpenCloseup", "closeupId": "WKS-Z01", "narrativeTarget": "Workshop_TubeTester" },
+    { "interactionId": "Workshop_PartsDrawer", "action": "OpenCloseup", "closeupId": "WKS-Z02", "narrativeTarget": "Workshop_PartsDrawers" },
+    { "interactionId": "Workshop_FloorPlan", "action": "OpenCloseup", "closeupId": "WKS-Z03", "narrativeTarget": "Workshop_FloorPlan" },
+    { "interactionId": "Workshop_Workbench", "action": "OpenCloseup", "closeupId": "WKS-Z04", "narrativeTarget": "Workshop_Wiring" },
+    { "interactionId": "Workshop_RepairLog", "action": "OpenCloseup", "closeupId": "WKS-Z05", "narrativeTarget": "Workshop_Records" },
+    { "interactionId": "Workshop_KeyCutter", "action": "PlayNarrative", "narrativeTarget": "Workshop_KeyCutter", "narrativeTrigger": "inspect" },
+    { "interactionId": "Workshop_FoldingCrank", "action": "OpenCloseup", "closeupId": "WKS-I01", "narrativeTarget": "Workshop_FoldingCrank" },
+    { "interactionId": "Workshop_Soldering", "action": "NoAction", "narrativeTarget": "Workshop_Soldering", "narrativeTrigger": "inspect" },
+    { "interactionId": "Workshop_ToolBoard", "action": "NoAction", "narrativeTarget": "Workshop_ToolBoard", "narrativeTrigger": "inspect" }
+  ],
+  "unlocks": [
+    { "interactionId": "Entry_LivingDoor", "requiredRecordsAny": ["PRO-Z01", "PRO.ENTRY.MAIL.DOC.REQUEST"], "lockedMessage": "우편함의 서비스 요청서를 먼저 확인해야 한다." },
+    { "interactionId": "Living_Toolbox", "requiredFlags": ["TVRearInspected"], "lockedMessage": "아직 공구함에서 꺼낼 도구를 정하지 못했다." },
+    { "interactionId": "Living_TubeCase", "requiredFlags": ["ScrewdriverOwned"], "lockedMessage": "먼저 후면 나사에 맞는 드라이버를 챙겨야 한다." },
+    { "interactionId": "Living_WorkshopDoor", "requiredFlags": ["WorkshopKeyOwned"], "lockedMessage": "아직 작업실 문은 잠겨 있다." },
+    { "interactionId": "Living_JinwooHand", "requiredFlags": ["SignalStabilizerSolved"], "lockedMessage": "아직 이 사건이 시작되지 않았다." },
+    { "interactionId": "Living_ReturnCircuit", "requiredFlags": ["FirstSlip1961Done"], "requiredEra": 1961, "lockedMessage": "1961년 귀환 회로에서만 확인할 수 있다." },
+    { "interactionId": "Workshop_TubeTester", "requiredItemsAny": ["NormalTube", "FaultyTube"], "lockedMessage": "아직 시험기를 작동시킬 준비가 되지 않았다." },
+    { "interactionId": "Workshop_FloorPlan", "requiredFlags": ["TubeTestNormal"], "lockedMessage": "서랍 안쪽 구조물이 걸려 도면을 펼칠 수 없다." },
+    { "interactionId": "Workshop_KeyCutter", "requiredFlags": ["FloorPlanSeen"], "lockedMessage": "지금은 이 장치에서 확인할 것이 없다." },
+    { "interactionId": "Workshop_FoldingCrank", "requiredFlags": ["FloorPlanSeen"], "requiredEra": 1961, "lockedMessage": "이 시점에는 도면과 맞는 부품이 보이지 않는다." }
+  ],
+  "chapters": [
+    {
+      "completionFlag": "Chapter1Complete",
+      "requiredFlags": ["TVPhysicalRepairDone", "ReturnCircuitSolved", "Photo2001ChildCreated", "ManualDialUnlocked", "VaseCausalityLearned", "SignalStabilizerSolved", "JinwooHandPreserved", "ClockKnotSolved", "WorkshopKeyUsed"]
+    },
+    {
+      "completionFlag": "Chapter2Complete",
+      "requiredFlags": ["FloorPlanSeen", "AllJournalPagesSeen", "TubeTestNormal"],
+      "requiredItems": ["item.floor_crank"]
+    }
+  ]
+}
